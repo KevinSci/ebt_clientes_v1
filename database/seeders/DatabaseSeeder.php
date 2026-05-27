@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
 
                 $project = Project::create([
                     'user_id'     => $client->id, // Relación for($client)
-                    'title'       => $projectName,
+                    'name'       => $projectName,
                     'description' => 'Descripción detallada para el proyecto de ' . $projectName,
                     'status'      => 'active',
                 ]);
