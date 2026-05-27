@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name'              => 'Administrador EBT',
             'email'             => 'admin@ebt.com',
-            'password'          => \Illuminate\Support\Facades\Hash::make('Tu_Contraseña_Super_Segura_Aquí'),
+            'password'          => \Illuminate\Support\Facades\Hash::make('admin'),
             'email_verified_at' => now(),
             // Agrega aquí el campo de rol si tu factory "admin()" alteraba alguna columna:
             // 'role' => 'admin', 
