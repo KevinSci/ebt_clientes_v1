@@ -3,9 +3,9 @@
 @section('title', 'Clientes')
 
 @section('admin-content')
-<div class="ebt-page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <div>
-        <h1 class="ebt-page-header__title h4 mb-0">Clientes</h1>
+        <h1 class="h3 fw-bold mb-0 text-dark">Clientes</h1>
         <p class="text-muted small mb-0">Gestión de cuentas de clientes</p>
     </div>
     <x-button
@@ -14,6 +14,7 @@
         data-bs-toggle="modal"
         data-bs-target="#modal-create-client"
         id="btn-open-create-client"
+        class="fw-medium shadow-sm"
     >
         Nuevo Cliente
     </x-button>
@@ -21,20 +22,20 @@
 
 {{-- ── Search bar ───────────────────────────────────────────────────────── --}}
 <form method="GET" action="{{ route('admin.clients.index') }}" class="mb-4" role="search">
-    <div class="input-group ebt-search">
-        <span class="input-group-text ebt-search__icon">
+    <div class="input-group shadow-sm">
+        <span class="input-group-text bg-white border-end-0 text-muted">
             <i class="bi bi-search" aria-hidden="true"></i>
         </span>
         <input
             type="search"
             name="search"
             id="search-clients"
-            class="form-control ebt-search__input"
+            class="form-control border-start-0 ps-0"
             placeholder="Buscar por nombre, empresa o email…"
             value="{{ $search }}"
             aria-label="Buscar clientes"
         >
-        <button type="submit" class="btn btn-primary">Buscar</button>
+        <button type="submit" class="btn btn-primary fw-medium px-4">Buscar</button>
         @if ($search)
             <a href="{{ route('admin.clients.index') }}" class="btn btn-outline-secondary" aria-label="Limpiar búsqueda">
                 <i class="bi bi-x-lg"></i>
@@ -53,14 +54,14 @@
         @foreach ($clients as $client)
             <div class="col-12 col-md-6 col-xl-4">
                 <a href="{{ route('admin.clients.show', $client) }}"
-                   class="text-decoration-none ebt-client-card-link">
-                    <x-card class="ebt-client-card h-100">
+                   class="text-decoration-none d-block h-100">
+                    <x-card class="h-100 transition-transform hover-shadow">
                         <div class="d-flex align-items-start gap-3">
-                            <span class="ebt-avatar ebt-avatar--lg flex-shrink-0">
+                            <span class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0 shadow-sm" style="width: 52px; height: 52px; font-size: 1.3rem;">
                                 {{ mb_strtoupper(substr($client->name, 0, 1)) }}
                             </span>
                             <div class="min-w-0 flex-grow-1">
-                                <h2 class="h6 mb-0 fw-bold text-truncate ebt-client-card__name">
+                                <h2 class="h6 mb-0 fw-bold text-dark text-truncate transition-colors">
                                     {{ $client->name }}
                                 </h2>
                                 @if ($client->company_name)
@@ -76,14 +77,14 @@
                                         <i class="bi bi-telephone me-1"></i>{{ $client->phone }}
                                     </p>
                                 @endif
-                                <div class="d-flex align-items-center gap-2 mt-2">
+                                <div class="d-flex align-items-center gap-2 mt-3 pt-2 border-top">
                                     <i class="bi bi-folder2-open text-primary small"></i>
-                                    <span class="small text-muted">
+                                    <span class="small text-muted fw-medium">
                                         {{ $client->projects_count }}
                                         {{ Str::plural('proyecto', $client->projects_count) }}
                                     </span>
-                                    <span class="ms-auto">
-                                        <i class="bi bi-arrow-right-circle text-primary"></i>
+                                    <span class="ms-auto text-primary">
+                                        <i class="bi bi-arrow-right-circle-fill"></i>
                                     </span>
                                 </div>
                             </div>
@@ -140,7 +141,7 @@
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             Cancelar
         </button>
-        <x-button type="submit" form="form-create-client" variant="primary" icon="bi-person-plus">
+        <x-button type="submit" form="form-create-client" variant="primary" icon="bi-person-plus" class="fw-medium shadow-sm">
             Crear Cliente
         </x-button>
     </x-slot:footer>
@@ -159,4 +160,10 @@
         });
     @endif
 </script>
+<style>
+    .hover-shadow { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+    .hover-shadow:hover { box-shadow: 0 4px 20px rgba(35, 38, 145, 0.1) !important; transform: translateY(-2px); }
+    .transition-colors { transition: color 0.2s ease; }
+    a:hover .transition-colors { color: var(--bs-primary) !important; }
+</style>
 @endpush

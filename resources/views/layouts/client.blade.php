@@ -10,7 +10,7 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid ebt-client-wrapper">
+    <div class="container py-4 py-md-5">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10 col-xl-9">
                 @yield('client-content')

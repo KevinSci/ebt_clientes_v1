@@ -13,20 +13,20 @@
 
     @stack('head')
 </head>
-<body class="ebt-body">
+<body class="bg-light text-dark d-flex flex-column min-vh-100">
 
     {{-- ── Navbar ──────────────────────────────────────────────────────── --}}
-    <nav class="navbar navbar-expand-lg ebt-navbar" id="ebt-navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-2" id="ebt-navbar">
         <div class="container-fluid px-4">
 
             {{-- Brand --}}
-            <a class="navbar-brand ebt-navbar__brand d-flex align-items-center gap-2" href="{{ route('login') }}">
-                <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" class="ebt-logo-img ebt-logo-img--navbar">
-                <span class="ebt-logo-text d-none d-sm-inline">Servicios Profesionales</span>
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{{ route('login') }}">
+                <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" class="ebt-logo-img" style="height: 40px;">
+                <span class="text-white fw-semibold small d-none d-sm-inline opacity-75">Servicios Profesionales</span>
             </a>
 
             {{-- Mobile toggle --}}
-            <button class="navbar-toggler ebt-navbar__toggler" type="button"
+            <button class="navbar-toggler border-0" type="button"
                     data-bs-toggle="collapse" data-bs-target="#ebtNavMenu"
                     aria-controls="ebtNavMenu" aria-expanded="false" aria-label="Abrir menú">
                 <span class="navbar-toggler-icon"></span>
@@ -38,13 +38,15 @@
                     @yield('nav-items')
 
                     @auth
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle ebt-navbar__user d-flex align-items-center gap-2"
+                    <li class="nav-item dropdown ms-lg-3">
+                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-2"
                            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="ebt-avatar">{{ mb_strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                            <span class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 0.9rem;">
+                                {{ mb_strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </span>
                             <span class="d-none d-md-inline fw-medium">{{ auth()->user()->name }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end ebt-dropdown">
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3">
                             <li>
                                 <span class="dropdown-item-text small text-muted">
                                     {{ auth()->user()->company_name ?? auth()->user()->email }}
@@ -54,8 +56,8 @@
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item ebt-dropdown__logout">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                                    <button type="submit" class="dropdown-item text-danger fw-medium d-flex align-items-center gap-2">
+                                        <i class="bi bi-box-arrow-right"></i>Cerrar sesión
                                     </button>
                                 </form>
                             </li>
@@ -81,17 +83,17 @@
     @endif
 
     {{-- ── Main Content ─────────────────────────────────────────────────── --}}
-    <main id="main-content" class="ebt-main">
+    <main id="main-content" class="flex-grow-1">
         @yield('content')
     </main>
 
     {{-- ── Footer ──────────────────────────────────────────────────────── --}}
-    <footer class="ebt-footer">
+    <footer class="bg-dark text-white-50 py-4 mt-auto">
         <div class="container text-center">
-            <p class="mb-1 fw-semibold">
-                <span class="text-ebt-red">EBT</span> Servicios Profesionales
+            <p class="mb-1 fw-semibold text-white">
+                <span class="text-danger">EBT</span> Servicios Profesionales
             </p>
-            <p class="small text-muted mb-0">
+            <p class="small mb-0 opacity-75">
                 Portal de Clientes &copy; {{ date('Y') }} — Todos los derechos reservados
             </p>
         </div>
