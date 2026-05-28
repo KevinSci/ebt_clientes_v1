@@ -37,9 +37,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
         Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
 
-        // Projects (show a client's project)
+        // Projects (show, store, destroy a client's project)
         Route::get('/clients/{client}/projects/{project}', [AdminProjectController::class, 'show'])
             ->name('clients.projects.show');
+        Route::post('/clients/{client}/projects', [AdminProjectController::class, 'store'])
+            ->name('clients.projects.store');
+        Route::delete('/clients/{client}/projects/{project}', [AdminProjectController::class, 'destroy'])
+            ->name('clients.projects.destroy');
 
         // Posts (create a post for a project)
         Route::post('/clients/{client}/projects/{project}/posts', [PostController::class, 'store'])

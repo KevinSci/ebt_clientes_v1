@@ -46,6 +46,15 @@
 {{-- ── Projects list ───────────────────────────────────────────────────── --}}
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h2 class="h5 mb-0">Proyectos</h2>
+    <x-button
+        variant="primary"
+        icon="bi-plus-lg"
+        data-bs-toggle="modal"
+        data-bs-target="#modal-create-project"
+        id="btn-open-create-project"
+    >
+        Nuevo Proyecto
+    </x-button>
 </div>
 
 @if ($client->projects->isEmpty())
@@ -78,4 +87,62 @@
     </div>
 @endif
 
+{{-- ══════════════════════════════════════════════════════════════════════ --}}
+{{-- Modal: Create new project                                             --}}
+{{-- ══════════════════════════════════════════════════════════════════════ --}}
+<x-modal id="modal-create-project" title="Nuevo Proyecto" size="md">
+
+    <form method="POST" action="{{ route('admin.clients.projects.store', $client) }}" id="form-create-project" novalidate>
+        @csrf
+
+        <div class="row g-3">
+            <div class="col-12">
+                <x-input name="name" label="Nombre del proyecto" :required="true" placeholder="Ej. Implementación Fase 1" />
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="mb-3">
+                    <label for="status" class="form-label fw-medium">
+                        Estado <span class="text-danger ms-1" aria-hidden="true">*</span>
+                    </label>
+                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
+                        <option value="active" {{ old('status', 'active') === 'active' ? 'selected' : '' }}>Activo</option>
+                        <option value="paused" {{ old('status') === 'paused' ? 'selected' : '' }}>Pausado</option>
+                        <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completado</option>
+                    </select>
+                    @error('status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
+                         placeholder="0 - 100" min="0" max="100" value="0" />
+            </div>
+        </div>
+
+    </form>
+
+    <x-slot:footer>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cancelar
+        </button>
+        <x-button type="submit" form="form-create-project" variant="primary" icon="bi-plus-lg">
+            Crear Proyecto
+        </x-button>
+    </x-slot:footer>
+
+</x-modal>
+
 @endsection
+
+@push('scripts')
+<script>
+    // Reopen modal with validation errors if the form submission failed
+    @if ($errors->any())
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = new bootstrap.Modal(document.getElementById('modal-create-project'));
+            modal.show();
+        });
+    @endif
+</script>
+@endpush

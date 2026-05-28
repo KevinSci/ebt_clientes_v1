@@ -16,7 +16,7 @@
         <aside class="ebt-sidebar" id="admin-sidebar">
             <div class="ebt-sidebar__header">
                 <div class="ebt-sidebar__logo">
-                    <span class="ebt-logo-mark ebt-logo-mark--sm">EBT</span>
+                    {{-- <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" class="ebt-logo-img ebt-logo-img--sidebar"> --}}
                     <span class="ebt-sidebar__title">Admin Panel</span>
                 </div>
             </div>

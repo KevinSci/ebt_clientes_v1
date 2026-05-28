@@ -26,7 +26,19 @@
                 Cliente: <strong>{{ $client->name }}</strong>
                 @if ($client->company_name) — {{ $client->company_name }} @endif
             </p>
-            <x-badge :status="$project->status" />
+            <div class="d-flex align-items-center gap-2 mt-1">
+                <x-badge :status="$project->status" />
+                
+                <form action="{{ route('admin.clients.projects.destroy', [$client, $project]) }}" method="POST"
+                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este proyecto y todas sus publicaciones de forma permanente?');"
+                      class="d-inline-block">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-outline-danger btn-sm py-1 px-2" style="font-size: 0.75rem;">
+                        <i class="bi bi-trash3 me-1"></i>Eliminar Proyecto
+                    </button>
+                </form>
+            </div>
         </div>
         <div class="ebt-project-progress-stat text-end">
             <span class="display-6 fw-bold text-primary">{{ $project->progress_percentage }}%</span>

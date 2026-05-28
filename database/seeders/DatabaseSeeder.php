@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name'              => 'Administrador EBT',
             'email'             => 'admin@ebt.com',
+            'role'              => 'admin',
             'password'          => Hash::make('admin'),
             'email_verified_at' => now(),
             'remember_token'    => Str::random(10),

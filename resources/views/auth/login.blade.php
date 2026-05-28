@@ -23,7 +23,7 @@
                     {{-- Logo / Brand --}}
                     <div class="ebt-login-card__header text-center mb-4">
                         <div class="ebt-login-logo mb-3" aria-hidden="true">
-                            <span class="ebt-logo-mark ebt-logo-mark--lg">EBT</span>
+                            <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" class="ebt-logo-img ebt-logo-img--login">
                         </div>
                         <h1 class="ebt-login-card__title h4">Portal de Clientes</h1>
                         <p class="text-muted small mb-0">EBT Servicios Profesionales</p>

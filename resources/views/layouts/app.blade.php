@@ -21,7 +21,7 @@
 
             {{-- Brand --}}
             <a class="navbar-brand ebt-navbar__brand d-flex align-items-center gap-2" href="{{ route('login') }}">
-                <span class="ebt-logo-mark">EBT</span>
+                <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" class="ebt-logo-img ebt-logo-img--navbar">
                 <span class="ebt-logo-text d-none d-sm-inline">Servicios Profesionales</span>
             </a>
 

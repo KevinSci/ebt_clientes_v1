@@ -9,3 +9,8 @@ window.bootstrap = bootstrap;
 export { initImagePreview } from './modules/imagePreview.js';
 export { initReadMore }     from './modules/readMore.js';
 export { initImageViewer }  from './modules/imageViewer.js';
+
+// Import images/assets so Vite processes them
+import.meta.glob([
+    '../img/**',
+]);
