@@ -56,7 +56,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <span class="badge rounded-circle text-bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px; font-size: 1.25rem;">
-                                {{ mb_strtoupper(substr($client->name, 0, 1)) }}
+                                <i class="bi bi-person-fill"></i>
                             </span>
                             <div class="min-w-0">
                                 <h5 class="card-title mb-0 fw-bold text-truncate">

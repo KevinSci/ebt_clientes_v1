@@ -16,7 +16,7 @@
                         {{-- Logo / Brand --}}
                         <div class="text-center mb-4">
                             <div class="mb-3">
-                                <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" style="height:68px">
+                                <img src="{{ asset('img/logo.svg') }}" alt="EBT Logo" style="height:68px">
                             </div>
                             <h1 class="h4">Portal de Clientes</h1>
                             <p class="text-muted small mb-0">EBT Servicios Profesionales</p>

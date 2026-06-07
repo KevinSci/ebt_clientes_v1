@@ -21,7 +21,7 @@
 
             {{-- Brand --}}
             <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('login') }}">
-                <img src="{{ Vite::asset('resources/img/logo.svg') }}" alt="EBT Logo" style="height:36px">
+                <img src="{{ asset('img/logo.svg') }}" alt="EBT Logo" style="height:36px">
                 <span class="small text-white d-none d-sm-inline">Servicios Profesionales</span>
             </a>
 
