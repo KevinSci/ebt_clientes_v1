@@ -78,4 +78,55 @@ class ClientController extends Controller
             ->route('admin.clients.index')
             ->with('success', 'Cliente creado correctamente.');
     }
+
+    /**
+     * Update the specified client in the database.
+     */
+    public function update(Request $request, User $client): RedirectResponse
+    {
+        abort_if($client->role !== 'client', 404);
+
+        $validated = $request->validate([
+            'name'         => ['required', 'string', 'max:255'],
+            'email'        => ['required', 'email', 'unique:users,email,' . $client->id],
+            'company_name' => ['nullable', 'string', 'max:255'],
+            'phone'        => ['nullable', 'string', 'max:30'],
+            'password'     => ['nullable', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $updateData = [
+            'name'         => $validated['name'],
+            'email'        => $validated['email'],
+            'company_name' => $validated['company_name'] ?? null,
+            'phone'        => $validated['phone'] ?? null,
+        ];
+
+        if (!empty($validated['password'])) {
+            $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        $client->update($updateData);
+
+        return redirect()
+            ->route('admin.clients.show', $client)
+            ->with('success', 'Cliente actualizado correctamente.');
+    }
+
+    /**
+     * Remove the specified client from the database.
+     */
+    public function destroy(User $client): RedirectResponse
+    {
+        abort_if($client->role !== 'client', 404);
+
+        // Soft-delete client's projects
+        $client->projects()->delete();
+
+        // Soft-delete client
+        $client->delete();
+
+        return redirect()
+            ->route('admin.clients.index')
+            ->with('success', 'Cliente eliminado correctamente.');
+    }
 }

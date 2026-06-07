@@ -17,23 +17,23 @@
 <div class="modal fade" id="{{ $id }}" tabindex="-1"
      aria-labelledby="{{ $id }}-label" aria-hidden="true">
     <div class="{{ $dialogClass }}">
-        <div class="modal-content ebt-modal__content">
+        <div class="modal-content">
 
             {{-- Header --}}
-            <div class="modal-header ebt-modal__header">
+            <div class="modal-header">
                 <h5 class="modal-title" id="{{ $id }}-label">{{ $title }}</h5>
-                <button type="button" class="btn-close btn-close-white"
+                <button type="button" class="btn-close"
                         data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             {{-- Body --}}
-            <div class="modal-body ebt-modal__body">
+            <div class="modal-body">
                 {{ $slot }}
             </div>
 
             {{-- Footer (optional named slot) --}}
             @isset($footer)
-                <div class="modal-footer ebt-modal__footer {{ $footerClass }}">
+                <div class="modal-footer {{ $footerClass }}">
                     {{ $footer }}
                 </div>
             @endisset

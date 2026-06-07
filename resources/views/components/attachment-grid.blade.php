@@ -14,29 +14,27 @@
 
 {{-- ── Document attachments ────────────────────────────────────────────── --}}
 @if ($documents->count() > 0)
-    <div class="ebt-attach-docs mb-3">
+    <div class="mb-3">
         <p class="small fw-semibold text-muted mb-2">
             <i class="bi bi-paperclip me-1"></i>
             {{ $documents->count() }} {{ Str::plural('documento', $documents->count()) }}
         </p>
-        <div class="d-flex flex-column gap-2">
+        <div class="list-group">
             @foreach ($documents as $doc)
                 <a href="{{ $doc->url }}"
                    target="_blank"
                    rel="noopener noreferrer"
-                   class="ebt-doc-chip d-inline-flex align-items-center gap-2 text-decoration-none">
-                    <span class="ebt-doc-chip__icon">
-                        <i class="bi bi-file-earmark-pdf-fill"></i>
-                    </span>
-                    <span class="ebt-doc-chip__name text-truncate">{{ $doc->file_name }}</span>
-                    <i class="bi bi-download ebt-doc-chip__dl ms-auto"></i>
+                   class="list-group-item list-group-item-action d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                    <span class="text-truncate flex-grow-1">{{ $doc->file_name }}</span>
+                    <i class="bi bi-download text-muted"></i>
                 </a>
             @endforeach
         </div>
     </div>
 @endif
 
-{{-- ── Image grid (Facebook-style) ─────────────────────────────────────── --}}
+{{-- ── Image grid (Facebook-style) — kept as high customization exception ── --}}
 @if ($allImages->count() > 0)
     <div class="ebt-img-grid ebt-img-grid--{{ min($allImages->count(), $maxVisible) }}"
          data-post-id="{{ $postId }}">

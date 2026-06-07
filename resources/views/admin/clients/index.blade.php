@@ -3,9 +3,9 @@
 @section('title', 'Clientes')
 
 @section('admin-content')
-<div class="ebt-page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <div>
-        <h1 class="ebt-page-header__title h4 mb-0">Clientes</h1>
+        <h1 class="h4 mb-0">Clientes</h1>
         <p class="text-muted small mb-0">Gestión de cuentas de clientes</p>
     </div>
     <x-button
@@ -21,15 +21,15 @@
 
 {{-- ── Search bar ───────────────────────────────────────────────────────── --}}
 <form method="GET" action="{{ route('admin.clients.index') }}" class="mb-4" role="search">
-    <div class="input-group ebt-search">
-        <span class="input-group-text ebt-search__icon">
+    <div class="input-group">
+        <span class="input-group-text">
             <i class="bi bi-search" aria-hidden="true"></i>
         </span>
         <input
             type="search"
             name="search"
             id="search-clients"
-            class="form-control ebt-search__input"
+            class="form-control"
             placeholder="Buscar por nombre, empresa o email…"
             value="{{ $search }}"
             aria-label="Buscar clientes"
@@ -43,53 +43,52 @@
     </div>
 </form>
 
-{{-- ── Clients grid ─────────────────────────────────────────────────────── --}}
+{{-- ── Clients cards ────────────────────────────────────────────────────── --}}
 @if ($clients->isEmpty())
     <x-alert type="info">
         No se encontraron clientes{{ $search ? " para «{$search}»" : '' }}.
     </x-alert>
 @else
-    <div class="row g-4" id="clients-grid">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="clients-grid">
         @foreach ($clients as $client)
-            <div class="col-12 col-md-6 col-xl-4">
-                <a href="{{ route('admin.clients.show', $client) }}"
-                   class="text-decoration-none ebt-client-card-link">
-                    <x-card class="ebt-client-card h-100">
-                        <div class="d-flex align-items-start gap-3">
-                            <span class="ebt-avatar ebt-avatar--lg flex-shrink-0">
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge rounded-circle text-bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px; font-size: 1.25rem;">
                                 {{ mb_strtoupper(substr($client->name, 0, 1)) }}
                             </span>
-                            <div class="min-w-0 flex-grow-1">
-                                <h2 class="h6 mb-0 fw-bold text-truncate ebt-client-card__name">
-                                    {{ $client->name }}
-                                </h2>
+                            <div class="min-w-0">
+                                <h5 class="card-title mb-0 fw-bold text-truncate">
+                                    <a href="{{ route('admin.clients.show', $client) }}" class="text-decoration-none text-dark stretched-link">
+                                        {{ $client->name }}
+                                    </a>
+                                </h5>
                                 @if ($client->company_name)
-                                    <p class="text-muted small mb-1 text-truncate">
+                                    <h6 class="card-subtitle mt-1 text-muted small text-truncate">
                                         <i class="bi bi-building me-1"></i>{{ $client->company_name }}
-                                    </p>
+                                    </h6>
                                 @endif
-                                <p class="text-muted small mb-2 text-truncate">
-                                    <i class="bi bi-envelope me-1"></i>{{ $client->email }}
-                                </p>
-                                @if ($client->phone)
-                                    <p class="text-muted small mb-2">
-                                        <i class="bi bi-telephone me-1"></i>{{ $client->phone }}
-                                    </p>
-                                @endif
-                                <div class="d-flex align-items-center gap-2 mt-2">
-                                    <i class="bi bi-folder2-open text-primary small"></i>
-                                    <span class="small text-muted">
-                                        {{ $client->projects_count }}
-                                        {{ Str::plural('proyecto', $client->projects_count) }}
-                                    </span>
-                                    <span class="ms-auto">
-                                        <i class="bi bi-arrow-right-circle text-primary"></i>
-                                    </span>
-                                </div>
                             </div>
                         </div>
-                    </x-card>
-                </a>
+                        
+                        <p class="card-text small text-muted mb-1 text-truncate">
+                            <i class="bi bi-envelope me-2"></i>{{ $client->email }}
+                        </p>
+                        @if ($client->phone)
+                            <p class="card-text small text-muted mb-3">
+                                <i class="bi bi-telephone me-2"></i>{{ $client->phone }}
+                            </p>
+                        @endif
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0 pt-0 d-flex justify-content-between align-items-center">
+                        <span class="badge text-bg-light border text-secondary">
+                            <i class="bi bi-folder2-open me-1"></i>
+                            {{ $client->projects_count }} {{ Str::plural('proyecto', $client->projects_count) }}
+                        </span>
+                        <i class="bi bi-arrow-right-circle text-primary fs-5" aria-hidden="true"></i>
+                    </div>
+                </div>
             </div>
         @endforeach
     </div>
