@@ -28,7 +28,7 @@
                     @if ($client->company_name) — {{ $client->company_name }} @endif
                 </p>
                 <div class="d-flex align-items-center gap-2 mt-1">
-                    <x-badge :status="$project->estatus" />
+                    <x-badge :status="$project->status" />
 
                     <form action="{{ route('admin.clients.projects.destroy', [$client, $project]) }}" method="POST"
                           onsubmit="return confirm('¿Estás seguro de que deseas eliminar este proyecto y todas sus publicaciones de forma permanente?');"

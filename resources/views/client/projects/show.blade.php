@@ -21,7 +21,7 @@
         <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-2">
             <div>
                 <h1 class="h5 fw-bold mb-1">{{ $project->name }}</h1>
-                <x-badge :status="$project->estatus" />
+                <x-badge :status="$project->status" />
             </div>
             <a href="{{ route('client.projects.index') }}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i>Volver

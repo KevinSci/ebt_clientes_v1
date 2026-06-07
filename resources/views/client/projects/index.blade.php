@@ -34,7 +34,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
                                     <h3 class="h6 mb-0 fw-bold">{{ $project->name }}</h3>
-                                    <x-badge :status="$project->estatus" />
+                                    <x-badge :status="$project->status" />
                                 </div>
                                 <p class="text-muted small mb-3">
                                     <i class="bi bi-calendar3 me-1"></i>
@@ -73,7 +73,7 @@
                                 <h3 class="h6 mb-0 fw-semibold text-muted">
                                     {{ $project->name }}
                                 </h3>
-                                <x-badge :status="$project->estatus" />
+                                <x-badge :status="$project->status" />
                             </div>
                             <p class="text-muted small mb-3">
                                 <i class="bi bi-calendar3 me-1"></i>
