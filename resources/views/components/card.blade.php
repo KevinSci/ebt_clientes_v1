@@ -5,10 +5,10 @@
     'noPad'    => false,
 ])
 
-<div {{ $attributes->merge(['class' => 'card ebt-card']) }}>
+<div {{ $attributes->merge(['class' => 'card']) }}>
 
     @if ($title)
-        <div class="card-header ebt-card__header">
+        <div class="card-header">
             <h5 class="card-title mb-0">{{ $title }}</h5>
             @if ($subtitle)
                 <p class="card-subtitle text-muted small mb-0 mt-1">{{ $subtitle }}</p>
@@ -16,12 +16,12 @@
         </div>
     @endif
 
-    <div @class(['card-body ebt-card__body', 'p-0' => $noPad])>
+    <div @class(['card-body', 'p-0' => $noPad])>
         {{ $slot }}
     </div>
 
     @if ($footer)
-        <div class="card-footer ebt-card__footer text-muted small">
+        <div class="card-footer text-muted small">
             {{ $footer }}
         </div>
     @endif

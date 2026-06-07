@@ -12,7 +12,7 @@
     $config = $map[$status] ?? ['variant' => 'light', 'label' => ucfirst($status), 'icon' => 'bi-circle'];
 @endphp
 
-<span {{ $attributes->merge(['class' => 'badge ebt-badge bg-' . $config['variant']]) }}>
-    <i class="bi {{ $config['icon'] }} me-1" style="font-size:.6em" aria-hidden="true"></i>
+<span {{ $attributes->merge(['class' => 'badge bg-' . $config['variant']]) }}>
+    <i class="bi {{ $config['icon'] }} me-1" aria-hidden="true"></i>
     {{ $config['label'] }}
 </span>

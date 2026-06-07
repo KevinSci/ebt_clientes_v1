@@ -5,12 +5,20 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root redirect
 // ─────────────────────────────────────────────────────────────────────────────
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', function () {
+    if (Auth::check()) {
+        return Auth::user()->isAdmin()
+            ? redirect()->route('admin.clients.index')
+            : redirect()->route('client.projects.index');
+    }
+    return redirect()->route('login');
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Authentication routes (guests only)
@@ -32,10 +40,12 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        // Clients (index + show + store/create via modal)
+        // Clients (index + show + store/create via modal + update + destroy)
         Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
         Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
+        Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
+        Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
 
         // Projects (show, store, destroy a client's project)
         Route::get('/clients/{client}/projects/{project}', [AdminProjectController::class, 'show'])
