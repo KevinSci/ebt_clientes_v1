@@ -67,7 +67,7 @@
             <div class="col-12 col-md-6">
                 <a href="{{ route('client.projects.show', $project) }}"
                    class="text-decoration-none">
-                    <div class="card h-100 border-start border-3 border-secondary">
+                    <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
                                 <h3 class="h6 mb-0 fw-semibold text-muted">

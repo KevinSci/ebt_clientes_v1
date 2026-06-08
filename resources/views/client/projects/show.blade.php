@@ -132,28 +132,7 @@
 
                     {{-- Post description with read more/less (Vanilla JS) --}}
                     <div class="mb-0">
-                        @php
-                            $desc      = $post->description;
-                            $needsTrim = mb_strlen($desc) > 150;
-                            $preview   = $needsTrim ? mb_substr($desc, 0, 150) : $desc;
-                        @endphp
-
-                        <div class="ebt-read-more" data-needs-trim="{{ $needsTrim ? 'true' : 'false' }}">
-                            <p class="ebt-read-more__text mb-0 text-muted" style="white-space: pre-line">
-                                <span class="ebt-read-more__preview">{{ $preview }}</span>
-                                @if ($needsTrim)
-                                    <span class="ebt-read-more__ellipsis">…</span>
-                                    <span class="ebt-read-more__full d-none">{{ mb_substr($desc, 150) }}</span>
-                                @endif
-                            </p>
-                            @if ($needsTrim)
-                                <button type="button"
-                                        class="btn btn-link btn-sm p-0 mt-1 ebt-read-more__btn"
-                                        aria-expanded="false">
-                                    Ver más
-                                </button>
-                            @endif
-                        </div>
+                        <x-read-more :text="$post->description" />
                     </div>
 
                     {{-- Attachments (images + documents) --}}
@@ -173,27 +152,10 @@
     </div>
 
     {{-- Pagination --}}
-    @if ($posts->hasPages())
-        <div class="mt-4 d-flex justify-content-center">
-            {{ $posts->links() }}
-        </div>
-    @endif
+    <x-pagination :items="$posts" />
 @endif
 
-{{-- ── Image viewer modal ───────────────────────────────────────────────── --}}
-<x-modal id="modal-image-viewer" title="Imagen" size="xl">
-    <div class="text-center ebt-viewer">
-        <img id="viewer-img" src="" alt="" class="ebt-viewer__img img-fluid">
-    </div>
-    <x-slot:footer>
-        <span class="text-muted small me-auto" id="viewer-filename"></span>
-        <a id="btn-viewer-download" href="#" download
-           class="btn btn-outline-secondary" target="_blank">
-            <i class="bi bi-download me-2"></i>Descargar
-        </a>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-    </x-slot:footer>
-</x-modal>
+<x-image-viewer-modal title="Imagen" />
 
 @endsection
 

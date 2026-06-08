@@ -94,11 +94,7 @@
     </div>
 
     {{-- Pagination --}}
-    @if ($clients->hasPages())
-        <div class="mt-4 d-flex justify-content-center">
-            {{ $clients->links() }}
-        </div>
-    @endif
+    <x-pagination :items="$clients" />
 @endif
 
 {{-- ══════════════════════════════════════════════════════════════════════ --}}
