@@ -198,11 +198,14 @@
 @endsection
 
 @push('scripts')
-<script type="module">
-    import { initReadMore }     from @json(Vite::asset('resources/js/modules/readMore.js'));
-    import { initImageViewer }  from @json(Vite::asset('resources/js/modules/imageViewer.js'));
-
-    initReadMore();
-    initImageViewer('modal-image-viewer', 'viewer-img', 'viewer-filename', 'btn-viewer-download');
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof window.initReadMore === 'function') {
+            window.initReadMore();
+        }
+        if (typeof window.initImageViewer === 'function') {
+            window.initImageViewer('modal-image-viewer', 'viewer-img', 'viewer-filename', 'btn-viewer-download');
+        }
+    });
 </script>
 @endpush

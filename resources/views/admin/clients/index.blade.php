@@ -49,7 +49,7 @@
         No se encontraron clientes{{ $search ? " para «{$search}»" : '' }}.
     </x-alert>
 @else
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="clients-grid">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 g-md-4" id="clients-grid">
         @foreach ($clients as $client)
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
@@ -58,7 +58,7 @@
                             <span class="badge rounded-circle text-bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px; font-size: 1.25rem;">
                                 <i class="bi bi-person-fill"></i>
                             </span>
-                            <div class="min-w-0">
+                            <div class="min-w-0 flex-grow-1">
                                 <h5 class="card-title mb-0 fw-bold text-truncate">
                                     <a href="{{ route('admin.clients.show', $client) }}" class="text-decoration-none text-dark stretched-link">
                                         {{ $client->name }}

@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StorageController;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Root redirect
@@ -72,3 +73,12 @@ Route::middleware(['auth', 'role:client'])
         Route::get('/projects', [ClientProjectController::class, 'index'])->name('projects.index');
         Route::get('/projects/{project}', [ClientProjectController::class, 'show'])->name('projects.show');
     });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Storage Fallback (Hostinger / Broken Symlink bypass)
+// ─────────────────────────────────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/storage/{path}', [StorageController::class, 'show'])
+        ->where('path', '.*')
+        ->name('storage.show');
+});

@@ -19,18 +19,39 @@ export function initImagePreview(inputId, containerId) {
 
     if (!input || !container) return;
 
-    input.addEventListener('change', () => {
-        container.innerHTML = '';
+    let stagedFiles = [];
 
-        if (input.files.length === 0) return;
+    function updateInputFiles() {
+        const dataTransfer = new DataTransfer();
+        stagedFiles.forEach(file => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+    }
+
+    function renderPreview() {
+        container.innerHTML = '';
+        if (stagedFiles.length === 0) return;
 
         const grid = document.createElement('div');
         grid.className = 'ebt-file-preview__grid';
 
-        Array.from(input.files).forEach((file) => {
+        stagedFiles.forEach((file, index) => {
             const isImage = file.type.startsWith('image/');
             const item    = document.createElement('div');
             item.className = 'ebt-file-preview__item';
+
+            // Botón de eliminar archivo
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'ebt-file-preview__delete-btn';
+            deleteBtn.innerHTML = '<i class="bi bi-x"></i>';
+            deleteBtn.title = 'Eliminar';
+            deleteBtn.setAttribute('aria-label', `Eliminar ${file.name}`);
+            deleteBtn.addEventListener('click', () => {
+                stagedFiles.splice(index, 1);
+                updateInputFiles();
+                renderPreview();
+            });
+            item.appendChild(deleteBtn);
 
             if (isImage) {
                 _buildImagePreview(file, item);
@@ -42,7 +63,34 @@ export function initImagePreview(inputId, containerId) {
         });
 
         container.appendChild(grid);
+    }
+
+    input.addEventListener('change', () => {
+        if (!input.files || input.files.length === 0) return;
+
+        Array.from(input.files).forEach((file) => {
+            // Evitar duplicados por nombre, tamaño y fecha de modificación
+            const isDuplicate = stagedFiles.some(f => 
+                f.name === file.name && 
+                f.size === file.size && 
+                f.lastModified === file.lastModified
+            );
+            if (!isDuplicate) {
+                stagedFiles.push(file);
+            }
+        });
+
+        updateInputFiles();
+        renderPreview();
     });
+
+    const form = input.closest('form');
+    if (form) {
+        form.addEventListener('reset', () => {
+            stagedFiles = [];
+            container.innerHTML = '';
+        });
+    }
 }
 
 /**

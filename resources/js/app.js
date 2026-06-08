@@ -3,12 +3,17 @@
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
-// Re-export Vanilla JS modules so Blade views can import them
-// via: import { initXxx } from '/js/modules/xxx.js'
-// (Vite copies them to public/js/modules/ during build)
-export { initImagePreview } from './modules/imagePreview.js';
-export { initReadMore }     from './modules/readMore.js';
-export { initImageViewer }  from './modules/imageViewer.js';
+import { initImagePreview } from './modules/imagePreview.js';
+import { initReadMore }     from './modules/readMore.js';
+import { initImageViewer }  from './modules/imageViewer.js';
+
+// Re-export Vanilla JS modules
+export { initImagePreview, initReadMore, initImageViewer };
+
+// Expose globally on the window object
+window.initImagePreview = initImagePreview;
+window.initReadMore     = initReadMore;
+window.initImageViewer  = initImageViewer;
 
 // Import images/assets so Vite processes them
 import.meta.glob([
