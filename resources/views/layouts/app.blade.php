@@ -16,7 +16,7 @@
 <body class="d-flex flex-column min-vh-100 bg-light overflow-x-hidden">
 
     {{-- ── Navbar ──────────────────────────────────────────────────────── --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" id="ebt-navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="ebt-navbar">
         <div class="container-fluid px-3">
 
             {{-- Brand --}}

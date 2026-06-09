@@ -59,7 +59,7 @@
 
     {{-- ── Left: Post form ──────────────────────────────────────────────── --}}
     <div class="col-12 col-xl-5">
-        <div class="card sticky-top" style="top: 70px">
+        <div class="card ebt-sticky-xl-top">
             <div class="card-header">
                 <h5 class="card-title mb-0">Nueva Publicación</h5>
             </div>
