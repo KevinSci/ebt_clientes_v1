@@ -5,17 +5,11 @@
 @section('admin-content')
 
 {{-- Breadcrumb --}}
-<nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="{{ route('admin.clients.index') }}">Clientes</a>
-        </li>
-        <li class="breadcrumb-item">
-            <a href="{{ route('admin.clients.show', $client) }}">{{ $client->name }}</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">{{ $project->name }}</li>
-    </ol>
-</nav>
+<x-breadcrumb :items="[
+    ['label' => 'Clientes', 'url' => route('admin.clients.index')],
+    ['label' => $client->name, 'url' => route('admin.clients.show', $client)],
+    ['label' => $project->name],
+]" />
 
 {{-- ── Project header ───────────────────────────────────────────────────── --}}
 <div class="card mb-4" id="project-header">
@@ -79,22 +73,12 @@
                         placeholder="Ej. Avance semana 3 — Inspección submarina"
                     />
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label fw-medium">
-                            Descripción <span class="text-danger" aria-hidden="true">*</span>
-                        </label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            rows="5"
-                            required
-                            class="form-control @error('description') is-invalid @enderror"
-                            placeholder="Describe el avance, observaciones o hallazgos del proyecto…"
-                        >{{ old('description') }}</textarea>
-                        @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    <x-textarea
+                        name="description"
+                        label="Descripción"
+                        :required="true"
+                        placeholder="Describe el avance, observaciones o hallazgos del proyecto…"
+                    />
 
                     <x-input
                         name="published_at"
@@ -163,7 +147,7 @@
                                                 {{ $post->published_at->format('d/m/Y H:i') }}
                                             </span>
                                         @endif
-                                        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.75rem;"
+                                        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 ebt-btn-xs"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#modal-edit-post-{{ $post->id }}">
                                             <i class="bi bi-pencil me-1"></i>Editar
@@ -197,21 +181,13 @@
                                     :value="$post->title"
                                 />
 
-                                <div class="mb-3">
-                                    <label for="description-{{ $post->id }}" class="form-label fw-medium">
-                                        Descripción <span class="text-danger" aria-hidden="true">*</span>
-                                    </label>
-                                    <textarea
-                                        id="description-{{ $post->id }}"
-                                        name="description"
-                                        rows="5"
-                                        required
-                                        class="form-control @error('description') is-invalid @enderror"
-                                    >{{ old('description', $post->description) }}</textarea>
-                                    @error('description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                <x-textarea
+                                    name="description"
+                                    label="Descripción"
+                                    :required="true"
+                                    :value="$post->description"
+                                    id="description-{{ $post->id }}"
+                                />
 
                                 <x-input
                                     name="published_at"
@@ -231,32 +207,30 @@
                                                         <!-- Hidden checkbox to submit deletion state -->
                                                         <input class="d-none" type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" id="del-att-{{ $attachment->id }}">
                                                         
-                                                        <!-- Red X button similar to new staged upload files -->
-                                                        <button type="button" 
-                                                                class="ebt-file-preview__delete-btn" 
-                                                                onclick="toggleAttachmentDeletion({{ $attachment->id }})"
-                                                                title="Marcar para eliminar">
-                                                            <i class="bi bi-x"></i>
-                                                        </button>
+                                        <button type="button" 
+                                                class="ebt-file-preview__delete-btn ebt-attachment-delete-toggle" 
+                                                data-attachment-id="{{ $attachment->id }}"
+                                                title="Marcar para eliminar">
+                                            <i class="bi bi-x"></i>
+                                        </button>
 
                                                         @if ($attachment->isImage())
-                                                            <img src="{{ $attachment->url }}" class="card-img-top object-fit-cover rounded" style="height: 60px;" alt="{{ $attachment->file_name }}">
+                                                            <img src="{{ $attachment->url }}" class="card-img-top object-fit-cover rounded ebt-attachment-thumb" alt="{{ $attachment->file_name }}">
                                                         @else
                                                             <div class="text-center py-2 text-danger">
                                                                 <i class="bi bi-file-earmark-pdf-fill fs-2"></i>
                                                             </div>
                                                         @endif
                                                         <div class="card-body p-1 text-center">
-                                                            <span class="small text-muted text-truncate d-block" style="font-size: 0.65rem;" title="{{ $attachment->file_name }}">
+                                                            <span class="small text-muted text-truncate d-block ebt-attachment-name" title="{{ $attachment->file_name }}">
                                                                 {{ $attachment->file_name }}
                                                             </span>
                                                         </div>
 
                                                         <!-- Overlay indicator to show marked for deletion -->
-                                                        <div class="position-absolute inset-0 bg-danger bg-opacity-10 d-none flex-column align-items-center justify-content-center text-danger rounded" 
-                                                             id="del-overlay-{{ $attachment->id }}" 
-                                                             style="pointer-events: none; z-index: 8;">
-                                                            <span class="fw-bold" style="font-size: 0.65rem; background: white; padding: 2px 6px; border: 1px solid currentColor; border-radius: 4px; transform: rotate(-10deg);">
+                                                        <div class="position-absolute inset-0 bg-danger bg-opacity-10 d-none flex-column align-items-center justify-content-center text-danger rounded ebt-delete-overlay" 
+                                                             id="del-overlay-{{ $attachment->id }}">
+                                                            <span class="fw-bold ebt-delete-overlay__label">
                                                                 ELIMINAR
                                                             </span>
                                                         </div>
@@ -321,19 +295,7 @@
                 <x-input name="name" label="Nombre del proyecto" :required="true" placeholder="Ej. Implementación Fase 1" :value="$project->name" />
             </div>
             <div class="col-12 col-md-6">
-                <div class="mb-3">
-                    <label for="status" class="form-label fw-medium">
-                        Estado <span class="text-danger ms-1" aria-hidden="true">*</span>
-                    </label>
-                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
-                        <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>Activo</option>
-                        <option value="paused" {{ old('status', $project->status) === 'paused' ? 'selected' : '' }}>Pausado</option>
-                        <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>Completado</option>
-                    </select>
-                    @error('status')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                <x-status-select name="status" :value="$project->status" />
             </div>
             <div class="col-12 col-md-6">
                 <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
@@ -352,73 +314,14 @@
     </x-slot:footer>
 </x-modal>
 
+{{-- Data attributes for JS module initialization (projectPageInit.js, modalReopen.js) --}}
+<div id="project-page-init" data-post-ids="{{ $project->posts->pluck('id')->toJson() }}"></div>
+
+@if ($errors->any())
+    <div data-reopen-form-id="{{ old('form_id') }}"
+         data-modal-map='{"edit_project":"modal-edit-project"}'
+         data-reopen-post-prefix="edit_post_"
+         data-reopen-post-modal-prefix="modal-edit-post-"></div>
+@endif
+
 @endsection
-
-@push('scripts')
-<script>
-    // Toggle state and styling of existing attachments marked for deletion
-    window.toggleAttachmentDeletion = function(id) {
-        const checkbox = document.getElementById('del-att-' + id);
-        const card = checkbox.closest('.ebt-existing-attachment');
-        const overlay = document.getElementById('del-overlay-' + id);
-        const btn = card.querySelector('.ebt-file-preview__delete-btn');
-        
-        checkbox.checked = !checkbox.checked;
-        
-        if (checkbox.checked) {
-            card.classList.add('border-danger');
-            card.style.opacity = '0.5';
-            overlay.classList.remove('d-none');
-            overlay.classList.add('d-flex');
-            btn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i>';
-            btn.title = 'Deshacer';
-            btn.style.backgroundColor = '#6c757d';
-        } else {
-            card.classList.remove('border-danger');
-            card.style.opacity = '1';
-            overlay.classList.remove('d-flex');
-            overlay.classList.add('d-none');
-            btn.innerHTML = '<i class="bi bi-x"></i>';
-            btn.title = 'Marcar para eliminar';
-            btn.style.backgroundColor = '';
-        }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof window.initImagePreview === 'function') {
-            window.initImagePreview('attachments', 'file-preview-container');
-        }
-        if (typeof window.initImageViewer === 'function') {
-            window.initImageViewer('modal-image-viewer', 'viewer-img', 'viewer-filename', 'btn-viewer-download');
-        }
-        if (typeof window.initReadMore === 'function') {
-            window.initReadMore();
-        }
-
-        // Reopen modal with validation errors if the form submission failed
-        @if ($errors->any() && old('form_id') === 'edit_project')
-            const modal = new bootstrap.Modal(document.getElementById('modal-edit-project'));
-            modal.show();
-        @endif
-
-        // Initialize previews for post edit modals
-        @foreach ($project->posts as $post)
-            if (typeof window.initImagePreview === 'function') {
-                window.initImagePreview('attachments-{{ $post->id }}', 'file-preview-container-{{ $post->id }}');
-            }
-        @endforeach
-
-        // Reopen post edit modal if validation failed for it
-        @if ($errors->any() && str_starts_with(old('form_id'), 'edit_post_'))
-            @php
-                $failedPostId = str_replace('edit_post_', '', old('form_id'));
-            @endphp
-            const failedModalEl = document.getElementById('modal-edit-post-' + '{{ $failedPostId }}');
-            if (failedModalEl) {
-                const modal = new bootstrap.Modal(failedModalEl);
-                modal.show();
-            }
-        @endif
-    });
-</script>
-@endpush

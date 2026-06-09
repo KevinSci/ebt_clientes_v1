@@ -6,14 +6,10 @@
 @section('client-content')
 
 {{-- Breadcrumb --}}
-<nav aria-label="breadcrumb" class="mt-3 mb-3">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="{{ route('client.projects.index') }}">Mis Proyectos</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">{{ $project->name }}</li>
-    </ol>
-</nav>
+<x-breadcrumb :items="[
+    ['label' => 'Mis Proyectos', 'url' => route('client.projects.index')],
+    ['label' => $project->name],
+]" class="mt-3" />
 
 {{-- ── Project summary card ─────────────────────────────────────────────── --}}
 <div class="card mb-4">
@@ -114,10 +110,7 @@
 
                     {{-- Post header --}}
                     <div class="d-flex align-items-start gap-3 mb-3">
-                        <span class="badge rounded-circle bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0"
-                              style="width:40px;height:40px" aria-hidden="true">
-                            <i class="bi bi-megaphone-fill"></i>
-                        </span>
+                        <x-avatar size="feed" variant="primary" icon="bi-megaphone-fill" />
                         <div>
                             <h2 class="h6 mb-0 fw-bold">{{ $post->title }}</h2>
                             @if ($post->published_at)
@@ -157,17 +150,5 @@
 
 <x-image-viewer-modal title="Imagen" />
 
+<div id="client-project-init"></div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof window.initReadMore === 'function') {
-            window.initReadMore();
-        }
-        if (typeof window.initImageViewer === 'function') {
-            window.initImageViewer('modal-image-viewer', 'viewer-img', 'viewer-filename', 'btn-viewer-download');
-        }
-    });
-</script>
-@endpush

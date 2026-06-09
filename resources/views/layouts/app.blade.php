@@ -21,7 +21,7 @@
 
             {{-- Brand --}}
             <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('login') }}">
-                <img src="{{ asset('img/logo.svg') }}" alt="EBT Logo" style="height:36px">
+                <img src="{{ asset('img/logo.svg') }}" alt="EBT Logo" class="ebt-logo-navbar">
                 <span class="small text-white d-none d-sm-inline">Servicios Profesionales</span>
             </a>
 
@@ -41,8 +41,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
                            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="badge rounded-circle bg-danger d-inline-flex align-items-center justify-content-center"
-                                  style="width:30px;height:30px">{{ mb_strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                            <x-avatar size="sm" variant="danger" :text="mb_strtoupper(substr(auth()->user()->name, 0, 1))" />
                             <span class="d-none d-md-inline fw-medium">{{ auth()->user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -71,7 +70,7 @@
 
     {{-- ── Flash Messages (Bootstrap Toast) ────────────────────────────── --}}
     @if (session('success') || session('error'))
-        <div class="toast-container position-fixed end-0 p-3" style="top: 56px; z-index: 1060;">
+        <div class="toast-container position-fixed end-0 p-3 ebt-toast-container">
             
             <template id="toast-template">
                 @if (session('success'))
@@ -97,43 +96,6 @@
                 @endif
             </template>
         </div>
-
-        <script>
-            (function () {
-                // Helper para identificar navegación por historial (flechas del navegador)
-                function isBackForwardNavigation() {
-                    const entries = window.performance && window.performance.getEntriesByType 
-                        ? window.performance.getEntriesByType('navigation') 
-                        : [];
-                    return entries.length > 0 && entries[0].type === 'back_forward';
-                }
-
-                document.addEventListener('DOMContentLoaded', function () {
-                    // Si el usuario usó las flechas, abortamos. Nada se clona, cero parpadeos.
-                    if (isBackForwardNavigation()) {
-                        return;
-                    }
-
-                    const template = document.getElementById('toast-template');
-                    const container = document.querySelector('.toast-container');
-                    
-                    if (!template || !container) return;
-
-                    // Clonamos el contenido interno del template
-                    const clone = template.content.cloneNode(true);
-                    const toastEl = clone.querySelector('.toast');
-                    
-                    if (toastEl) {
-                        // Inyectamos el toast dentro de su contenedor correcto
-                        container.appendChild(toastEl);
-
-                        // Inicializamos y mostramos con Bootstrap
-                        var toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 5000 });
-                        toast.show();
-                    }
-                });
-            })();
-        </script>
     @endif
 
     {{-- ── Main Content ─────────────────────────────────────────────────── --}}

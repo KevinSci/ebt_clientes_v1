@@ -39,19 +39,9 @@ class PostController extends Controller
             'published_at' => $validated['published_at'] ?? now(),
         ]);
 
-        // Process and store each uploaded file
+        // Store uploaded file attachments
         if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $directory = "attachments/{$post->id}";
-                $path      = $file->store($directory, 'public');
-                $mimeType  = $file->getMimeType();
-
-                $post->attachments()->create([
-                    'file_name' => $file->getClientOriginalName(),
-                    'file_path' => $path,
-                    'type'      => str_starts_with($mimeType, 'image/') ? 'image' : 'document',
-                ]);
-            }
+            $this->storeAttachments($post, $request->file('attachments'));
         }
 
         return redirect()
@@ -95,23 +85,37 @@ class PostController extends Controller
             }
         }
 
-        // Process and store each newly uploaded file
+        // Store newly uploaded file attachments
         if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $directory = "attachments/{$post->id}";
-                $path      = $file->store($directory, 'public');
-                $mimeType  = $file->getMimeType();
-
-                $post->attachments()->create([
-                    'file_name' => $file->getClientOriginalName(),
-                    'file_path' => $path,
-                    'type'      => str_starts_with($mimeType, 'image/') ? 'image' : 'document',
-                ]);
-            }
+            $this->storeAttachments($post, $request->file('attachments'));
         }
 
         return redirect()
             ->route('admin.clients.projects.show', [$client, $project])
             ->with('success', 'Publicación actualizada correctamente.');
+    }
+
+    /**
+     * Store uploaded file attachments for a given post.
+     *
+     * Each file is stored in `storage/app/public/attachments/{post_id}/`
+     * and registered as an Attachment record with the appropriate type.
+     *
+     * @param  Post                                        $post
+     * @param  array<\Illuminate\Http\UploadedFile>        $files
+     */
+    private function storeAttachments(Post $post, array $files): void
+    {
+        foreach ($files as $file) {
+            $directory = "attachments/{$post->id}";
+            $path      = $file->store($directory, 'public');
+            $mimeType  = $file->getMimeType();
+
+            $post->attachments()->create([
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'type'      => str_starts_with($mimeType, 'image/') ? 'image' : 'document',
+            ]);
+        }
     }
 }

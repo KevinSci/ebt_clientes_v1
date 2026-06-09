@@ -5,24 +5,17 @@
 @section('admin-content')
 
 {{-- Breadcrumb --}}
-<nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="{{ route('admin.clients.index') }}">Clientes</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">{{ $client->name }}</li>
-    </ol>
-</nav>
+<x-breadcrumb :items="[
+    ['label' => 'Clientes', 'url' => route('admin.clients.index')],
+    ['label' => $client->name],
+]" />
 
 {{-- ── Client profile header ───────────────────────────────────────────── --}}
 <div class="card mb-4">
     <div class="card-body">
         <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 justify-content-between">
             <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0 w-100 w-md-auto">
-                <span class="badge rounded-circle bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0"
-                      style="width:56px;height:56px;font-size:1.4rem">
-                    <i class="bi bi-person-fill"></i>
-                </span>
+                <x-avatar size="lg" variant="primary" icon="bi-person-fill" />
                 <div class="min-w-0 flex-grow-1">
                     <h1 class="h4 mb-1 fw-bold text-break">{{ $client->name }}</h1>
                     @if ($client->company_name)
@@ -123,19 +116,7 @@
                 <x-input name="name" label="Nombre del proyecto" :required="true" placeholder="Ej. Implementación Fase 1" />
             </div>
             <div class="col-12 col-md-6">
-                <div class="mb-3">
-                    <label for="status" class="form-label fw-medium">
-                        Estado <span class="text-danger ms-1" aria-hidden="true">*</span>
-                    </label>
-                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
-                        <option value="active" {{ old('status', 'active') === 'active' ? 'selected' : '' }}>Activo</option>
-                        <option value="paused" {{ old('status') === 'paused' ? 'selected' : '' }}>Pausado</option>
-                        <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completado</option>
-                    </select>
-                    @error('status')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                <x-status-select name="status" value="active" />
             </div>
             <div class="col-12 col-md-6">
                 <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
@@ -234,22 +215,9 @@
 
 </x-modal>
 
-@endsection
+@if ($errors->any())
+    <div data-reopen-form-id="{{ old('form_id') }}"
+         data-modal-map='{"edit_client":"modal-edit-client","create_project":"modal-create-project"}'></div>
+@endif
 
-@push('scripts')
-<script>
-    // Reopen modal with validation errors if the form submission failed
-    @if ($errors->any())
-        document.addEventListener('DOMContentLoaded', function () {
-            const formId = "{{ old('form_id') }}";
-            if (formId === 'edit_client') {
-                const modal = new bootstrap.Modal(document.getElementById('modal-edit-client'));
-                modal.show();
-            } else if (formId === 'create_project') {
-                const modal = new bootstrap.Modal(document.getElementById('modal-create-project'));
-                modal.show();
-            }
-        });
-    @endif
-</script>
-@endpush
+@endsection

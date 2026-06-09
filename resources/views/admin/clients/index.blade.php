@@ -55,9 +55,7 @@
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
-                            <span class="badge rounded-circle text-bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px; font-size: 1.25rem;">
-                                <i class="bi bi-person-fill"></i>
-                            </span>
+                            <x-avatar size="md" variant="primary" icon="bi-person-fill" class="me-3" />
                             <div class="min-w-0 flex-grow-1">
                                 <h5 class="card-title mb-0 fw-bold text-truncate">
                                     <a href="{{ route('admin.clients.show', $client) }}" class="text-decoration-none text-dark stretched-link">
@@ -142,16 +140,8 @@
 
 </x-modal>
 
-@endsection
+@if ($errors->any())
+    <div data-reopen-modal-id="modal-create-client"></div>
+@endif
 
-@push('scripts')
-<script>
-    // Re-open modal with validation errors if the form submission failed
-    @if ($errors->any())
-        document.addEventListener('DOMContentLoaded', function () {
-            const modal = new bootstrap.Modal(document.getElementById('modal-create-client'));
-            modal.show();
-        });
-    @endif
-</script>
-@endpush
+@endsection

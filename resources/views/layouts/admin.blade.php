@@ -17,7 +17,7 @@
     <div class="d-flex flex-nowrap flex-grow-1">
 
         {{-- ── Sidebar (Bootstrap 5 official sidebar pattern) ──────────── --}}
-        <div class="d-none d-lg-flex flex-column flex-shrink-0 p-3 text-bg-dark ebt-sidebar" style="width: 240px;" id="admin-sidebar">
+        <div class="d-none d-lg-flex flex-column flex-shrink-0 p-3 text-bg-dark ebt-sidebar" id="admin-sidebar">
             <span class="text-uppercase fw-semibold small text-white mb-2">Admin Panel</span>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
@@ -31,19 +31,16 @@
             </ul>
             <hr>
             <div class="d-flex align-items-center gap-2">
-                <span class="badge rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center"
-                      style="width:28px;height:28px;font-size:.75rem">
-                    {{ mb_strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </span>
+                <x-avatar size="xs" variant="secondary" :text="mb_strtoupper(substr(auth()->user()->name, 0, 1))" />
                 <div>
                     <p class="mb-0 fw-semibold small text-white">{{ auth()->user()->name }}</p>
-                    <p class="mb-0 text-white-50" style="font-size:.7rem">Administrador</p>
+                    <p class="mb-0 text-white-50 ebt-text-xxs">Administrador</p>
                 </div>
             </div>
         </div>
 
         {{-- ── Admin Content Area & Footer ───────────────────────────────── --}}
-        <div class="d-flex flex-column flex-grow-1 ebt-admin-content-wrapper" style="min-width:0">
+        <div class="d-flex flex-column flex-grow-1 min-w-0 ebt-admin-content-wrapper">
             <div class="flex-grow-1 p-3 p-lg-4">
                 @yield('admin-content')
             </div>
