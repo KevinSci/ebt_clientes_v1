@@ -18,24 +18,27 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 justify-content-between">
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0 w-100 w-md-auto">
                 <span class="badge rounded-circle bg-primary d-inline-flex align-items-center justify-content-center flex-shrink-0"
                       style="width:56px;height:56px;font-size:1.4rem">
                     <i class="bi bi-person-fill"></i>
                 </span>
-                <div>
+                <div class="min-w-0 flex-grow-1">
                     <h1 class="h4 mb-1 fw-bold text-break">{{ $client->name }}</h1>
                     @if ($client->company_name)
-                        <p class="mb-1 text-muted small text-break">
-                            <i class="bi bi-building me-2"></i>{{ $client->company_name }}
+                        <p class="mb-1 text-muted small text-break d-flex align-items-start gap-2">
+                            <i class="bi bi-building mt-1 flex-shrink-0" aria-hidden="true"></i>
+                            <span class="text-break">{{ $client->company_name }}</span>
                         </p>
                     @endif
-                    <p class="mb-1 text-muted small text-break">
-                        <i class="bi bi-envelope me-2"></i>{{ $client->email }}
+                    <p class="mb-1 text-muted small text-break d-flex align-items-start gap-2">
+                        <i class="bi bi-envelope mt-1 flex-shrink-0" aria-hidden="true"></i>
+                        <span class="text-break">{{ $client->email }}</span>
                     </p>
                     @if ($client->phone)
-                        <p class="mb-0 text-muted small text-break">
-                            <i class="bi bi-telephone me-2"></i>{{ $client->phone }}
+                        <p class="mb-0 text-muted small text-break d-flex align-items-start gap-2">
+                            <i class="bi bi-telephone mt-1 flex-shrink-0" aria-hidden="true"></i>
+                            <span class="text-break">{{ $client->phone }}</span>
                         </p>
                     @endif
                 </div>
