@@ -89,7 +89,7 @@
                     <h3 class="h6 mb-0 fw-semibold">{{ $project->name }}</h3>
                     <x-badge :status="$project->status" />
                 </div>
-                <x-progress-bar :percentage="$project->progress_percentage" />
+                <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <span class="small text-muted">
                         <i class="bi bi-calendar3 me-1"></i>

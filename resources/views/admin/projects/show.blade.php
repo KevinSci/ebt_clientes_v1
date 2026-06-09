@@ -18,7 +18,7 @@
 </nav>
 
 {{-- ── Project header ───────────────────────────────────────────────────── --}}
-<div class="card mb-4">
+<div class="card mb-4" id="project-header">
     <div class="card-body">
         <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
             <div>
@@ -29,6 +29,13 @@
                 </p>
                 <div class="d-flex align-items-center gap-2 mt-1">
                     <x-badge :status="$project->status" />
+
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-edit-project"
+                            id="btn-open-edit-project">
+                        <i class="bi bi-pencil me-1"></i>Editar Proyecto
+                    </button>
 
                     <form action="{{ route('admin.clients.projects.destroy', [$client, $project]) }}" method="POST"
                           onsubmit="return confirm('¿Estás seguro de que deseas eliminar este proyecto y todas sus publicaciones de forma permanente?');"
@@ -41,13 +48,9 @@
                     </form>
                 </div>
             </div>
-            <div class="text-end">
-                <span class="h3 fw-bold text-primary">{{ $project->progress_percentage }}%</span>
-                <p class="small text-muted mb-0">Completado</p>
-            </div>
         </div>
         <div class="mt-3">
-            <x-progress-bar :percentage="$project->progress_percentage" />
+            <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
         </div>
     </div>
 </div>
@@ -177,6 +180,49 @@
 
 <x-image-viewer-modal title="Vista de imagen" />
 
+{{-- Modal: Edit Project --}}
+<x-modal id="modal-edit-project" title="Editar Proyecto" size="md">
+    <form method="POST" action="{{ route('admin.clients.projects.update', [$client, $project]) }}" id="form-edit-project" novalidate>
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="form_id" value="edit_project">
+
+        <div class="row g-3">
+            <div class="col-12">
+                <x-input name="name" label="Nombre del proyecto" :required="true" placeholder="Ej. Implementación Fase 1" :value="$project->name" />
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="mb-3">
+                    <label for="status" class="form-label fw-medium">
+                        Estado <span class="text-danger ms-1" aria-hidden="true">*</span>
+                    </label>
+                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
+                        <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>Activo</option>
+                        <option value="paused" {{ old('status', $project->status) === 'paused' ? 'selected' : '' }}>Pausado</option>
+                        <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>Completado</option>
+                    </select>
+                    @error('status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
+                         placeholder="0 - 100" min="0" max="100" :value="$project->progress_percentage" />
+            </div>
+        </div>
+    </form>
+
+    <x-slot:footer>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cancelar
+        </button>
+        <x-button type="submit" form="form-edit-project" variant="primary" icon="bi-check-lg">
+            Guardar Cambios
+        </x-button>
+    </x-slot:footer>
+</x-modal>
+
 @endsection
 
 @push('scripts')
@@ -191,6 +237,12 @@
         if (typeof window.initReadMore === 'function') {
             window.initReadMore();
         }
+
+        // Reopen modal with validation errors if the form submission failed
+        @if ($errors->any() && old('form_id') === 'edit_project')
+            const modal = new bootstrap.Modal(document.getElementById('modal-edit-project'));
+            modal.show();
+        @endif
     });
 </script>
 @endpush

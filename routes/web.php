@@ -48,11 +48,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
         Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
 
-        // Projects (show, store, destroy a client's project)
+        // Projects (show, store, update, destroy a client's project)
         Route::get('/clients/{client}/projects/{project}', [AdminProjectController::class, 'show'])
             ->name('clients.projects.show');
         Route::post('/clients/{client}/projects', [AdminProjectController::class, 'store'])
             ->name('clients.projects.store');
+        Route::put('/clients/{client}/projects/{project}', [AdminProjectController::class, 'update'])
+            ->name('clients.projects.update');
         Route::delete('/clients/{client}/projects/{project}', [AdminProjectController::class, 'destroy'])
             ->name('clients.projects.destroy');
 

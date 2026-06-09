@@ -65,4 +65,29 @@ class ProjectController extends Controller
 
         return view('admin.projects.show', compact('client', 'project'));
     }
+
+    /**
+     * Update the specified project in the database.
+     */
+    public function update(Request $request, User $client, Project $project): RedirectResponse
+    {
+        abort_if($client->role !== 'client', 404);
+        abort_if($project->user_id !== $client->id, 404);
+
+        $validated = $request->validate([
+            'name'                => ['required', 'string', 'max:255'],
+            'status'              => ['required', 'string', 'in:active,paused,completed'],
+            'progress_percentage' => ['required', 'integer', 'min:0', 'max:100'],
+        ]);
+
+        $project->update([
+            'name'                => $validated['name'],
+            'status'              => $validated['status'],
+            'progress_percentage' => $validated['progress_percentage'],
+        ]);
+
+        return redirect()
+            ->route('admin.clients.projects.show', [$client, $project])
+            ->with('success', 'Proyecto actualizado correctamente.');
+    }
 }

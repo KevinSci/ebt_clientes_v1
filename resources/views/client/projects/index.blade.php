@@ -40,7 +40,7 @@
                                     <i class="bi bi-calendar3 me-1"></i>
                                     Iniciado {{ $project->created_at->diffForHumans() }}
                                 </p>
-                                <x-progress-bar :percentage="$project->progress_percentage" />
+                                <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
                                 <p class="text-end small text-primary fw-medium mt-2 mb-0">
                                     Ver feed <i class="bi bi-arrow-right ms-1"></i>
                                 </p>
@@ -79,7 +79,7 @@
                                 <i class="bi bi-calendar3 me-1"></i>
                                 {{ $project->created_at->format('d/m/Y') }}
                             </p>
-                            <x-progress-bar :percentage="$project->progress_percentage" />
+                            <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
                         </div>
                     </div>
                 </a>

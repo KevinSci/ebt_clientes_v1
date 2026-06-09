@@ -27,7 +27,7 @@
                 <i class="bi bi-arrow-left me-1"></i>Volver
             </a>
         </div>
-        <x-progress-bar :percentage="$project->progress_percentage" class="mt-3" />
+        <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" class="mt-3" />
     </div>
 </div>
 

@@ -3,18 +3,28 @@
     'variant'    => null,   // Bootstrap variant override; auto-selected if null
     'showLabel'  => true,
     'height'     => '10',   // px
+    'status'     => null,
 ])
 
 @php
     $pct = max(0, min(100, (int) $percentage));
 
     if ($variant === null) {
-        $variant = match(true) {
-            $pct === 100 => 'success',
-            $pct >= 60   => 'primary',
-            $pct >= 30   => 'warning',
-            default      => 'danger',
-        };
+        if ($status !== null) {
+            $variant = match($status) {
+                'active'    => 'primary',
+                'paused'    => 'warning',
+                'completed' => 'success',
+                default     => 'primary',
+            };
+        } else {
+            $variant = match(true) {
+                $pct === 100 => 'success',
+                $pct >= 60   => 'primary',
+                $pct >= 30   => 'warning',
+                default      => 'danger',
+            };
+        }
     }
 @endphp
 
