@@ -18,35 +18,9 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-DdFCOqPV.js",
+    "file": "assets/app-Whd9Hxt_.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true,
-    "imports": [
-      "resources/js/modules/imagePreview.js",
-      "resources/js/modules/imagePreview.js",
-      "resources/js/modules/imageViewer.js",
-      "resources/js/modules/imageViewer.js",
-      "resources/js/modules/readMore.js",
-      "resources/js/modules/readMore.js"
-    ]
-  },
-  "resources/js/modules/imagePreview.js": {
-    "file": "assets/imagePreview-BQCh3wbc.js",
-    "name": "imagePreview",
-    "src": "resources/js/modules/imagePreview.js",
-    "isEntry": true
-  },
-  "resources/js/modules/imageViewer.js": {
-    "file": "assets/imageViewer-C5ihSu0L.js",
-    "name": "imageViewer",
-    "src": "resources/js/modules/imageViewer.js",
-    "isEntry": true
-  },
-  "resources/js/modules/readMore.js": {
-    "file": "assets/readMore-CxXAHAN_.js",
-    "name": "readMore",
-    "src": "resources/js/modules/readMore.js",
     "isEntry": true
   }
 }
