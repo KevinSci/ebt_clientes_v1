@@ -58,9 +58,11 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/clients/{client}/projects/{project}', [AdminProjectController::class, 'destroy'])
             ->name('clients.projects.destroy');
 
-        // Posts (create a post for a project)
+        // Posts (create/update a post for a project)
         Route::post('/clients/{client}/projects/{project}/posts', [PostController::class, 'store'])
             ->name('clients.projects.posts.store');
+        Route::put('/clients/{client}/projects/{project}/posts/{post}', [PostController::class, 'update'])
+            ->name('clients.projects.posts.update');
     });
 
 // ─────────────────────────────────────────────────────────────────────────────

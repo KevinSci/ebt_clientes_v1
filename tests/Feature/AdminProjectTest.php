@@ -130,3 +130,52 @@ it('prevents client from updating a project', function () {
 
     $response->assertRedirect(route('client.projects.index'));
 });
+
+it('allows admin to update a post', function () {
+    $project = Project::factory()->create([
+        'user_id' => $this->client->id,
+    ]);
+
+    $post = Post::create([
+        'project_id'  => $project->id,
+        'title'       => 'Old Title',
+        'description' => 'Old Description',
+    ]);
+
+    $this->actingAs($this->admin);
+
+    $response = $this->put(route('admin.clients.projects.posts.update', [$this->client, $project, $post]), [
+        'title'       => 'Updated Title',
+        'description' => 'Updated Description',
+    ]);
+
+    $response->assertRedirect(route('admin.clients.projects.show', [$this->client, $project]));
+    $response->assertSessionHas('success', 'Publicación actualizada correctamente.');
+
+    $this->assertDatabaseHas('posts', [
+        'id'          => $post->id,
+        'title'       => 'Updated Title',
+        'description' => 'Updated Description',
+    ]);
+});
+
+it('prevents client from updating a post', function () {
+    $project = Project::factory()->create([
+        'user_id' => $this->client->id,
+    ]);
+
+    $post = Post::create([
+        'project_id'  => $project->id,
+        'title'       => 'Old Title',
+        'description' => 'Old Description',
+    ]);
+
+    $this->actingAs($this->client);
+
+    $response = $this->put(route('admin.clients.projects.posts.update', [$this->client, $project, $post]), [
+        'title'       => 'Unauthorized Update',
+        'description' => 'Should fail',
+    ]);
+
+    $response->assertRedirect(route('client.projects.index'));
+});

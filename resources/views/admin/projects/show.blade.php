@@ -152,16 +152,23 @@
             <x-scrollable maxHeight="650px">
                 <div class="d-flex flex-column gap-3">
                     @foreach ($project->posts as $post)
-                        <div class="card">
+                        <div class="card mb-3">
                             <div class="card-body">
                                 <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
                                     <h3 class="h6 mb-0 fw-bold">{{ $post->title }}</h3>
-                                    @if ($post->published_at)
-                                        <span class="small text-muted text-nowrap">
-                                            <i class="bi bi-calendar3 me-1"></i>
-                                            {{ $post->published_at->format('d/m/Y H:i') }}
-                                        </span>
-                                    @endif
+                                    <div class="d-flex align-items-center gap-2">
+                                        @if ($post->published_at)
+                                            <span class="small text-muted text-nowrap">
+                                                <i class="bi bi-calendar3 me-1"></i>
+                                                {{ $post->published_at->format('d/m/Y H:i') }}
+                                            </span>
+                                        @endif
+                                        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.75rem;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal-edit-post-{{ $post->id }}">
+                                            <i class="bi bi-pencil me-1"></i>Editar
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <x-read-more :text="$post->description" class="small" />
@@ -172,6 +179,126 @@
                                 @endif
                             </div>
                         </div>
+
+                        {{-- Modal: Edit Post --}}
+                        <x-modal id="modal-edit-post-{{ $post->id }}" title="Editar Publicación" size="lg">
+                            <form method="POST" action="{{ route('admin.clients.projects.posts.update', [$client, $project, $post]) }}" 
+                                  enctype="multipart/form-data" 
+                                  id="form-edit-post-{{ $post->id }}" 
+                                  novalidate>
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="form_id" value="edit_post_{{ $post->id }}">
+
+                                <x-input
+                                    name="title"
+                                    label="Título de la publicación"
+                                    :required="true"
+                                    :value="$post->title"
+                                />
+
+                                <div class="mb-3">
+                                    <label for="description-{{ $post->id }}" class="form-label fw-medium">
+                                        Descripción <span class="text-danger" aria-hidden="true">*</span>
+                                    </label>
+                                    <textarea
+                                        id="description-{{ $post->id }}"
+                                        name="description"
+                                        rows="5"
+                                        required
+                                        class="form-control @error('description') is-invalid @enderror"
+                                    >{{ old('description', $post->description) }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <x-input
+                                    name="published_at"
+                                    type="datetime-local"
+                                    label="Fecha de publicación"
+                                    :value="$post->published_at ? $post->published_at->format('Y-m-d\TH:i') : ''"
+                                />
+
+                                {{-- Manage existing attachments --}}
+                                @if($post->attachments->count() > 0)
+                                    <div class="mb-3">
+                                        <label class="form-label fw-medium">Evidencias actuales (Marcar para eliminar):</label>
+                                        <div class="row g-2">
+                                            @foreach ($post->attachments as $attachment)
+                                                <div class="col-6 col-sm-4 col-md-3" id="attachment-wrapper-{{ $attachment->id }}">
+                                                    <div class="card h-100 p-1 position-relative border ebt-existing-attachment">
+                                                        <!-- Hidden checkbox to submit deletion state -->
+                                                        <input class="d-none" type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" id="del-att-{{ $attachment->id }}">
+                                                        
+                                                        <!-- Red X button similar to new staged upload files -->
+                                                        <button type="button" 
+                                                                class="ebt-file-preview__delete-btn" 
+                                                                onclick="toggleAttachmentDeletion({{ $attachment->id }})"
+                                                                title="Marcar para eliminar">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+
+                                                        @if ($attachment->isImage())
+                                                            <img src="{{ $attachment->url }}" class="card-img-top object-fit-cover rounded" style="height: 60px;" alt="{{ $attachment->file_name }}">
+                                                        @else
+                                                            <div class="text-center py-2 text-danger">
+                                                                <i class="bi bi-file-earmark-pdf-fill fs-2"></i>
+                                                            </div>
+                                                        @endif
+                                                        <div class="card-body p-1 text-center">
+                                                            <span class="small text-muted text-truncate d-block" style="font-size: 0.65rem;" title="{{ $attachment->file_name }}">
+                                                                {{ $attachment->file_name }}
+                                                            </span>
+                                                        </div>
+
+                                                        <!-- Overlay indicator to show marked for deletion -->
+                                                        <div class="position-absolute inset-0 bg-danger bg-opacity-10 d-none flex-column align-items-center justify-content-center text-danger rounded" 
+                                                             id="del-overlay-{{ $attachment->id }}" 
+                                                             style="pointer-events: none; z-index: 8;">
+                                                            <span class="fw-bold" style="font-size: 0.65rem; background: white; padding: 2px 6px; border: 1px solid currentColor; border-radius: 4px; transform: rotate(-10deg);">
+                                                                ELIMINAR
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Add new attachments --}}
+                                <div class="mb-3">
+                                    <label for="attachments-{{ $post->id }}" class="form-label fw-medium">
+                                        Agregar nuevos archivos adjuntos
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="attachments-{{ $post->id }}"
+                                        name="attachments[]"
+                                        class="form-control"
+                                        multiple
+                                        accept="image/*,.pdf"
+                                    >
+                                    <div class="form-text">
+                                        Imágenes (JPG, PNG, GIF, WebP) y PDFs. Máx. 20 MB por archivo.
+                                    </div>
+                                </div>
+
+                                {{-- Preview container --}}
+                                <div id="file-preview-container-{{ $post->id }}" class="ebt-file-preview mb-3" aria-live="polite"></div>
+
+                            </form>
+
+                            <x-slot:footer>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
+                                <x-button type="submit" form="form-edit-post-{{ $post->id }}" variant="primary" icon="bi-check-lg">
+                                    Guardar Cambios
+                                </x-button>
+                            </x-slot:footer>
+                        </x-modal>
                     @endforeach
                 </div>
             </x-scrollable>
@@ -229,6 +356,34 @@
 
 @push('scripts')
 <script>
+    // Toggle state and styling of existing attachments marked for deletion
+    window.toggleAttachmentDeletion = function(id) {
+        const checkbox = document.getElementById('del-att-' + id);
+        const card = checkbox.closest('.ebt-existing-attachment');
+        const overlay = document.getElementById('del-overlay-' + id);
+        const btn = card.querySelector('.ebt-file-preview__delete-btn');
+        
+        checkbox.checked = !checkbox.checked;
+        
+        if (checkbox.checked) {
+            card.classList.add('border-danger');
+            card.style.opacity = '0.5';
+            overlay.classList.remove('d-none');
+            overlay.classList.add('d-flex');
+            btn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i>';
+            btn.title = 'Deshacer';
+            btn.style.backgroundColor = '#6c757d';
+        } else {
+            card.classList.remove('border-danger');
+            card.style.opacity = '1';
+            overlay.classList.remove('d-flex');
+            overlay.classList.add('d-none');
+            btn.innerHTML = '<i class="bi bi-x"></i>';
+            btn.title = 'Marcar para eliminar';
+            btn.style.backgroundColor = '';
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof window.initImagePreview === 'function') {
             window.initImagePreview('attachments', 'file-preview-container');
@@ -244,6 +399,25 @@
         @if ($errors->any() && old('form_id') === 'edit_project')
             const modal = new bootstrap.Modal(document.getElementById('modal-edit-project'));
             modal.show();
+        @endif
+
+        // Initialize previews for post edit modals
+        @foreach ($project->posts as $post)
+            if (typeof window.initImagePreview === 'function') {
+                window.initImagePreview('attachments-{{ $post->id }}', 'file-preview-container-{{ $post->id }}');
+            }
+        @endforeach
+
+        // Reopen post edit modal if validation failed for it
+        @if ($errors->any() && str_starts_with(old('form_id'), 'edit_post_'))
+            @php
+                $failedPostId = str_replace('edit_post_', '', old('form_id'));
+            @endphp
+            const failedModalEl = document.getElementById('modal-edit-post-' + '{{ $failedPostId }}');
+            if (failedModalEl) {
+                const modal = new bootstrap.Modal(failedModalEl);
+                modal.show();
+            }
         @endif
     });
 </script>
