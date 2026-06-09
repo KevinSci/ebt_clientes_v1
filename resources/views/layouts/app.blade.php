@@ -142,16 +142,18 @@
     </main>
 
     {{-- ── Footer ──────────────────────────────────────────────────────── --}}
-    <footer class="bg-dark text-light py-3 mt-auto">
-        <div class="container text-center">
-            <p class="mb-1 fw-semibold">
-                <span class="text-danger">EBT</span> Servicios Profesionales
-            </p>
-            <p class="small text-secondary mb-0">
-                Portal de Clientes &copy; {{ date('Y') }} — Todos los derechos reservados
-            </p>
-        </div>
-    </footer>
+    @section('footer')
+        <footer class="bg-dark text-light py-3 mt-auto">
+            <div class="container text-center">
+                <p class="mb-1 fw-semibold">
+                    <span class="text-danger">EBT</span> Servicios Profesionales
+                </p>
+                <p class="small text-secondary mb-0">
+                    Portal de Clientes &copy; {{ date('Y') }} — Todos los derechos reservados
+                </p>
+            </div>
+        </footer>
+    @show
 
     @stack('scripts')
 

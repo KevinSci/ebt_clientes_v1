@@ -148,31 +148,33 @@
 
         @if ($project->posts->isEmpty())
             <x-alert type="info">Aún no hay publicaciones en este proyecto.</x-alert>
-        @else
-            <div class="d-flex flex-column gap-3">
-                @foreach ($project->posts as $post)
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-                                <h3 class="h6 mb-0 fw-bold">{{ $post->title }}</h3>
-                                @if ($post->published_at)
-                                    <span class="small text-muted text-nowrap">
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        {{ $post->published_at->format('d/m/Y H:i') }}
-                                    </span>
+@else
+            <x-scrollable maxHeight="650px">
+                <div class="d-flex flex-column gap-3">
+                    @foreach ($project->posts as $post)
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                    <h3 class="h6 mb-0 fw-bold">{{ $post->title }}</h3>
+                                    @if ($post->published_at)
+                                        <span class="small text-muted text-nowrap">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            {{ $post->published_at->format('d/m/Y H:i') }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="mb-3">
+                                    <x-read-more :text="$post->description" class="small" />
+                                </div>
+
+                                @if ($post->attachments->count() > 0)
+                                    <x-attachment-grid :attachments="$post->attachments" :postId="$post->id" />
                                 @endif
                             </div>
-                            <div class="mb-3">
-                                <x-read-more :text="$post->description" class="small" />
-                            </div>
-
-                            @if ($post->attachments->count() > 0)
-                                <x-attachment-grid :attachments="$post->attachments" :postId="$post->id" />
-                            @endif
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            </x-scrollable>
         @endif
     </div>
 
