@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', $client->name . ' — Cliente')
+@section('title', $client->name)
 
 @section('admin-content')
 
@@ -11,7 +11,7 @@
 ]" />
 
 {{-- ── Client profile header ───────────────────────────────────────────── --}}
-<div class="card mb-4">
+<div class="card mb-4" id="client-info-card">
     <div class="card-body">
         <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 justify-content-between">
             <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0 w-100 w-md-auto">
@@ -78,25 +78,14 @@
     <x-alert type="info">Este cliente no tiene proyectos aún.</x-alert>
 @else
     <x-scrollable maxHeight="500px">
-        <div class="list-group">
+        <div class="d-flex flex-column gap-3 p-1">
             @foreach ($client->projects as $project)
-                <a href="{{ route('admin.clients.projects.show', [$client, $project]) }}"
-                   class="list-group-item list-group-item-action">
-                    <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-                        <h3 class="h6 mb-0 fw-semibold">{{ $project->name }}</h3>
-                        <x-badge :status="$project->status" />
-                    </div>
-                    <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <span class="small text-muted">
-                            <i class="bi bi-calendar3 me-1"></i>
-                            {{ $project->created_at->format('d/m/Y') }}
-                        </span>
-                        <span class="small text-primary fw-medium">
-                            Ver proyecto <i class="bi bi-arrow-right ms-1"></i>
-                        </span>
-                    </div>
-                </a>
+                <x-project-card 
+                    :project="$project" 
+                    :href="route('admin.clients.projects.show', [$client, $project])" 
+                    linkText="Ver proyecto" 
+                    :historical="$project->status !== 'active'" 
+                />
             @endforeach
         </div>
     </x-scrollable>
@@ -121,6 +110,10 @@
             <div class="col-12 col-md-6">
                 <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
                          placeholder="0 - 100" min="0" max="100" value="0" />
+            </div>
+            <div class="col-12">
+                <x-input name="created_at" type="datetime-local" label="Fecha de creación"
+                         :value="now()->format('Y-m-d\TH:i')" />
             </div>
         </div>
 

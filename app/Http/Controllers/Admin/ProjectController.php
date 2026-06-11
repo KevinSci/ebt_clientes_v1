@@ -22,12 +22,14 @@ class ProjectController extends Controller
             'name'                => ['required', 'string', 'max:255'],
             'status'              => ['required', 'string', 'in:active,paused,completed'],
             'progress_percentage' => ['required', 'integer', 'min:0', 'max:100'],
+            'created_at'          => ['nullable', 'date'],
         ]);
 
         $client->projects()->create([
             'name'                => $validated['name'],
             'status'              => $validated['status'],
             'progress_percentage' => $validated['progress_percentage'],
+            'created_at'          => $validated['created_at'] ?? now(),
         ]);
 
         return redirect()
@@ -78,12 +80,14 @@ class ProjectController extends Controller
             'name'                => ['required', 'string', 'max:255'],
             'status'              => ['required', 'string', 'in:active,paused,completed'],
             'progress_percentage' => ['required', 'integer', 'min:0', 'max:100'],
+            'created_at'          => ['nullable', 'date'],
         ]);
 
         $project->update([
             'name'                => $validated['name'],
             'status'              => $validated['status'],
             'progress_percentage' => $validated['progress_percentage'],
+            'created_at'          => $validated['created_at'] ?? $project->created_at,
         ]);
 
         return redirect()

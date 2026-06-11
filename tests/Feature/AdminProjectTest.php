@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,10 +15,13 @@ beforeEach(function () {
 it('allows admin to create a project for a client', function () {
     $this->actingAs($this->admin);
 
+    $customDate = '2026-05-15 10:30:00';
+
     $response = $this->post(route('admin.clients.projects.store', $this->client), [
         'name'                => 'Nuevo Proyecto EBT',
         'status'              => 'active',
         'progress_percentage' => 25,
+        'created_at'          => $customDate,
     ]);
 
     $response->assertRedirect(route('admin.clients.show', $this->client));
@@ -28,6 +32,7 @@ it('allows admin to create a project for a client', function () {
         'name'                => 'Nuevo Proyecto EBT',
         'status'              => 'active',
         'progress_percentage' => 25,
+        'created_at'          => $customDate,
     ]);
 });
 
@@ -82,10 +87,13 @@ it('allows admin to update a project', function () {
 
     $this->actingAs($this->admin);
 
+    $customDate = '2026-05-20 15:45:00';
+
     $response = $this->put(route('admin.clients.projects.update', [$this->client, $project]), [
         'name'                => 'Updated Name',
         'status'              => 'paused',
         'progress_percentage' => 50,
+        'created_at'          => $customDate,
     ]);
 
     $response->assertRedirect(route('admin.clients.projects.show', [$this->client, $project]));
@@ -96,6 +104,7 @@ it('allows admin to update a project', function () {
         'name'                => 'Updated Name',
         'status'              => 'paused',
         'progress_percentage' => 50,
+        'created_at'          => $customDate,
     ]);
 });
 
@@ -178,4 +187,41 @@ it('prevents client from updating a post', function () {
     ]);
 
     $response->assertRedirect(route('client.projects.index'));
+});
+
+it('allows admin to create a post with docx, xlsx, zip, rar attachments', function () {
+    $this->actingAs($this->admin);
+
+    $project = Project::factory()->create([
+        'user_id' => $this->client->id,
+    ]);
+
+    \Illuminate\Support\Facades\Storage::fake('public');
+
+    $docx = \Illuminate\Http\UploadedFile::fake()->create('documento.docx', 0);
+    $xlsx = \Illuminate\Http\UploadedFile::fake()->create('planilla.xlsx', 100);
+    $zip = \Illuminate\Http\UploadedFile::fake()->create('archivos.zip', 100);
+    $rar = \Illuminate\Http\UploadedFile::fake()->create('respaldo.rar', 100);
+
+    $response = $this->post(route('admin.clients.projects.posts.store', [$this->client, $project]), [
+        'title'       => 'Avance con Adjuntos Especiales',
+        'description' => 'Prueba de subida de archivos varios.',
+        'attachments' => [$docx, $xlsx, $zip, $rar],
+    ]);
+
+    $response->assertRedirect(route('admin.clients.projects.show', [$this->client, $project]));
+    $response->assertSessionHas('success', 'Publicación creada correctamente.');
+
+    $this->assertDatabaseHas('posts', [
+        'project_id' => $project->id,
+        'title'      => 'Avance con Adjuntos Especiales',
+    ]);
+
+    $post = Post::where('title', 'Avance con Adjuntos Especiales')->first();
+    $this->assertCount(4, $post->attachments);
+
+    $this->assertDatabaseHas('attachments', ['file_name' => 'documento.docx', 'type' => 'document']);
+    $this->assertDatabaseHas('attachments', ['file_name' => 'planilla.xlsx', 'type' => 'document']);
+    $this->assertDatabaseHas('attachments', ['file_name' => 'archivos.zip', 'type' => 'document']);
+    $this->assertDatabaseHas('attachments', ['file_name' => 'respaldo.rar', 'type' => 'document']);
 });

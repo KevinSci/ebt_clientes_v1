@@ -25,6 +25,7 @@ class Project extends Model
         'name',
         'status',
         'progress_percentage',
+        'created_at',
     ];
 
     /**

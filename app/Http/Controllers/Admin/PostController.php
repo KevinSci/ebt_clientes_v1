@@ -30,7 +30,7 @@ class PostController extends Controller
             'description'   => ['required', 'string'],
             'published_at'  => ['nullable', 'date'],
             'attachments'   => ['nullable', 'array', 'max:20'],
-            'attachments.*' => ['file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,pdf'],
+            'attachments.*' => ['file', 'max:20480', 'extensions:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,zip,rar'],
         ]);
 
         $post = $project->posts()->create([
@@ -65,14 +65,14 @@ class PostController extends Controller
             'delete_attachments'   => ['nullable', 'array'],
             'delete_attachments.*' => ['integer', 'exists:attachments,id'],
             'attachments'          => ['nullable', 'array', 'max:20'],
-            'attachments.*'        => ['file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,pdf'],
+            'attachments.*'        => ['file', 'max:20480', 'extensions:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,zip,rar'],
         ]);
 
-        $post->update([
+        $post->fill([
             'title'        => $validated['title'],
             'description'  => $validated['description'],
             'published_at' => $validated['published_at'] ?? now(),
-        ]);
+        ])->save();
 
         // Process attachments marked for deletion
         if ($request->has('delete_attachments')) {

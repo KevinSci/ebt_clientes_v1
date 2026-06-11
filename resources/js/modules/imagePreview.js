@@ -122,10 +122,13 @@ function _buildImagePreview(file, item) {
  * @private
  */
 function _buildDocPreview(file, item) {
+    const config = _getFileConfig(file.name);
+    
     item.classList.add('ebt-file-preview__item--doc');
+    item.classList.add(config.colorClass);
 
     const icon = document.createElement('i');
-    icon.className  = 'bi bi-file-earmark-pdf-fill ebt-file-preview__doc-icon';
+    icon.className  = `bi ${config.icon} ebt-file-preview__doc-icon ${config.iconColorClass}`;
     icon.setAttribute('aria-hidden', 'true');
 
     const name = document.createElement('span');
@@ -140,6 +143,50 @@ function _buildDocPreview(file, item) {
     item.appendChild(name);
     item.appendChild(size);
 }
+
+/**
+ * Get the config configuration (icon class, container class, icon color class) based on extension.
+ * @private
+ */
+function _getFileConfig(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    switch (ext) {
+        case 'pdf':
+            return {
+                icon: 'bi-file-earmark-pdf-fill',
+                colorClass: 'ebt-file-preview__item--pdf',
+                iconColorClass: 'text-danger'
+            };
+        case 'doc':
+        case 'docx':
+            return {
+                icon: 'bi-file-earmark-word-fill',
+                colorClass: 'ebt-file-preview__item--word',
+                iconColorClass: 'text-primary'
+            };
+        case 'xls':
+        case 'xlsx':
+            return {
+                icon: 'bi-file-earmark-excel-fill',
+                colorClass: 'ebt-file-preview__item--excel',
+                iconColorClass: 'text-success'
+            };
+        case 'zip':
+        case 'rar':
+            return {
+                icon: 'bi-file-earmark-zip-fill',
+                colorClass: 'ebt-file-preview__item--zip',
+                iconColorClass: 'text-warning'
+            };
+        default:
+            return {
+                icon: 'bi-file-earmark-arrow-down-fill',
+                colorClass: 'ebt-file-preview__item--generic',
+                iconColorClass: 'text-secondary'
+            };
+    }
+}
+
 
 /**
  * Truncate a long filename for display.

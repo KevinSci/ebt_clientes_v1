@@ -141,13 +141,37 @@
 }
 
 .ebt-file-preview__item--doc {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.ebt-file-preview__item--pdf {
     background: #fff5f5;
     border-color: #f5c2c7;
 }
 
+.ebt-file-preview__item--word {
+    background: #f0f4fc;
+    border-color: #b8d2f5;
+}
+
+.ebt-file-preview__item--excel {
+    background: #f1f9f3;
+    border-color: #c3e6cb;
+}
+
+.ebt-file-preview__item--zip {
+    background: #fff9eb;
+    border-color: #ffeeba;
+}
+
+.ebt-file-preview__item--generic {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+}
+
 .ebt-file-preview__doc-icon {
     font-size: 1.8rem;
-    color: #dc3545;
 }
 
 .ebt-file-preview__name {

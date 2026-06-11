@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Portal EBT') — EBT Servicios Profesionales</title>
+    <title>@yield('title', 'Portal EBT')</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('img/logo.svg') }}">
     <meta name="description" content="@yield('meta_description', 'Portal de Clientes EBT — Gestión de proyectos y evidencias.')">
 
     {{-- Bootstrap CSS vía Vite (SCSS compilado) --}}
@@ -50,6 +51,13 @@
                                     {{ auth()->user()->company_name ?? auth()->user()->email }}
                                 </span>
                             </li>
+                            @if(auth()->user()->isAdmin())
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
+                                        <i class="bi bi-gear me-2"></i>Configuración
+                                    </a>
+                                </li>
+                            @endif
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">

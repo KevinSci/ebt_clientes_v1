@@ -28,25 +28,11 @@
         <div class="row g-3">
             @foreach ($activeProjects as $project)
                 <div class="col-12 col-md-6">
-                    <a href="{{ route('client.projects.show', $project) }}"
-                       class="text-decoration-none">
-                        <div class="card h-100 border-start border-3 border-primary">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
-                                    <h3 class="h6 mb-0 fw-bold">{{ $project->name }}</h3>
-                                    <x-badge :status="$project->status" />
-                                </div>
-                                <p class="text-muted small mb-3">
-                                    <i class="bi bi-calendar3 me-1"></i>
-                                    Iniciado {{ $project->created_at->diffForHumans() }}
-                                </p>
-                                <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
-                                <p class="text-end small text-primary fw-medium mt-2 mb-0">
-                                    Ver feed <i class="bi bi-arrow-right ms-1"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
+                    <x-project-card 
+                        :project="$project" 
+                        :href="route('client.projects.show', $project)" 
+                        linkText="Ver feed" 
+                    />
                 </div>
             @endforeach
         </div>
@@ -65,24 +51,11 @@
     <div class="row g-3">
         @foreach ($historicalProjects as $project)
             <div class="col-12 col-md-6">
-                <a href="{{ route('client.projects.show', $project) }}"
-                   class="text-decoration-none">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
-                                <h3 class="h6 mb-0 fw-semibold text-muted">
-                                    {{ $project->name }}
-                                </h3>
-                                <x-badge :status="$project->status" />
-                            </div>
-                            <p class="text-muted small mb-3">
-                                <i class="bi bi-calendar3 me-1"></i>
-                                {{ $project->created_at->format('d/m/Y') }}
-                            </p>
-                            <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" />
-                        </div>
-                    </div>
-                </a>
+                <x-project-card 
+                    :project="$project" 
+                    :href="route('client.projects.show', $project)" 
+                    :historical="true" 
+                />
             </div>
         @endforeach
     </div>

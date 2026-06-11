@@ -30,13 +30,10 @@
                 </li>
             </ul>
             <hr>
-            <div class="d-flex align-items-center gap-2">
-                <x-avatar size="xs" variant="secondary" :text="mb_strtoupper(substr(auth()->user()->name, 0, 1))" />
-                <div>
-                    <p class="mb-0 fw-semibold small text-white">{{ auth()->user()->name }}</p>
-                    <p class="mb-0 text-white-50 ebt-text-xxs">Administrador</p>
-                </div>
-            </div>
+            <a href="{{ route('admin.profile.edit') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white opacity-85 hover-opacity-100 transition-opacity">
+                <i class="bi bi-gear-fill"></i>
+                <span class="small fw-semibold">Configuración</span>
+            </a>
         </div>
 
         {{-- ── Admin Content Area & Footer ───────────────────────────────── --}}

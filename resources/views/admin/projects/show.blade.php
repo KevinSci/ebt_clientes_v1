@@ -98,10 +98,10 @@
                             name="attachments[]"
                             class="form-control @error('attachments') is-invalid @enderror @error('attachments.*') is-invalid @enderror"
                             multiple
-                            accept="image/*,.pdf"
+                            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
                         >
                         <div class="form-text">
-                            Imágenes (JPG, PNG, GIF, WebP) y PDFs. Máx. 20 MB por archivo.
+                            Imágenes (JPG, PNG, GIF, WebP), PDFs, Word, Excel y archivos comprimidos (ZIP, RAR). Máx. 20 MB por archivo.
                         </div>
                         @error('attachments')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -215,12 +215,12 @@
                                         </button>
 
                                                         @if ($attachment->isImage())
-                                                            <img src="{{ $attachment->url }}" class="card-img-top object-fit-cover rounded ebt-attachment-thumb" alt="{{ $attachment->file_name }}">
-                                                        @else
-                                                            <div class="text-center py-2 text-danger">
-                                                                <i class="bi bi-file-earmark-pdf-fill fs-2"></i>
-                                                            </div>
-                                                        @endif
+                                                             <img src="{{ $attachment->url }}" class="card-img-top object-fit-cover rounded ebt-attachment-thumb" alt="{{ $attachment->file_name }}">
+                                                         @else
+                                                             <div class="text-center py-2 {{ $attachment->icon['color'] }}">
+                                                                 <i class="bi {{ $attachment->icon['icon'] }} fs-2"></i>
+                                                             </div>
+                                                         @endif
                                                         <div class="card-body p-1 text-center">
                                                             <span class="small text-muted text-truncate d-block ebt-attachment-name" title="{{ $attachment->file_name }}">
                                                                 {{ $attachment->file_name }}
@@ -252,10 +252,10 @@
                                         name="attachments[]"
                                         class="form-control"
                                         multiple
-                                        accept="image/*,.pdf"
+                                        accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
                                     >
                                     <div class="form-text">
-                                        Imágenes (JPG, PNG, GIF, WebP) y PDFs. Máx. 20 MB por archivo.
+                                        Imágenes (JPG, PNG, GIF, WebP), PDFs, Word, Excel y archivos comprimidos (ZIP, RAR). Máx. 20 MB por archivo.
                                     </div>
                                 </div>
 
@@ -300,6 +300,10 @@
             <div class="col-12 col-md-6">
                 <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
                          placeholder="0 - 100" min="0" max="100" :value="$project->progress_percentage" />
+            </div>
+            <div class="col-12">
+                <x-input name="created_at" type="datetime-local" label="Fecha de creación"
+                         :value="$project->created_at ? $project->created_at->format('Y-m-d\TH:i') : ''" />
             </div>
         </div>
     </form>

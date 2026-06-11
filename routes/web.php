@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
@@ -63,6 +64,10 @@ Route::middleware(['auth', 'role:admin'])
             ->name('clients.projects.posts.store');
         Route::put('/clients/{client}/projects/{project}/posts/{post}', [PostController::class, 'update'])
             ->name('clients.projects.posts.update');
+
+        // Profile / Settings
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     });
 
 // ─────────────────────────────────────────────────────────────────────────────

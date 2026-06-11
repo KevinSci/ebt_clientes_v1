@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -81,5 +82,13 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === 'client';
+    }
+
+    protected function email(): Attribute
+    {
+        return Attribute::make(
+            set: fn(string $value) => strtolower($value),
+            get: fn(string $value) => strtolower($value),
+        );
     }
 }

@@ -25,7 +25,7 @@
                    target="_blank"
                    rel="noopener noreferrer"
                    class="list-group-item list-group-item-action d-flex align-items-center gap-2">
-                    <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                    <i class="bi {{ $doc->icon['icon'] }} {{ $doc->icon['color'] }}"></i>
                     <span class="text-truncate flex-grow-1">{{ $doc->file_name }}</span>
                     <i class="bi bi-download text-muted"></i>
                 </a>
