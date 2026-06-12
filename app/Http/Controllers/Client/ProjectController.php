@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -15,21 +16,19 @@ class ProjectController extends Controller
      * Projects are split into active and historical (completed/paused)
      * for the card-based mobile-first layout.
      */
-    public function index(): View
+    public function index(Company $company): View
     {
-        $user = auth()->user();
-
-        $activeProjects = $user->projects()
+        $activeProjects = $company->projects()
             ->active()
             ->latest()
             ->get();
 
-        $historicalProjects = $user->projects()
+        $historicalProjects = $company->projects()
             ->whereIn('status', ['completed', 'paused'])
             ->latest()
             ->get();
 
-        return view('client.projects.index', compact('activeProjects', 'historicalProjects'));
+        return view('client.projects.index', compact('company', 'activeProjects', 'historicalProjects'));
     }
 
     /**
@@ -41,11 +40,8 @@ class ProjectController extends Controller
      *
      * Posts are ordered by published_at descending.
      */
-    public function show(Request $request, Project $project): View
+    public function show(Request $request, Company $company, Project $project): View
     {
-        // Ensure the project belongs to the authenticated client
-        abort_if($project->user_id !== auth()->id(), 403);
-
         $search   = $request->string('search')->trim();
         $dateFrom = $request->input('date_from');
         $dateTo   = $request->input('date_to');
@@ -60,6 +56,6 @@ class ProjectController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('client.projects.show', compact('project', 'posts', 'search', 'dateFrom', 'dateTo'));
+        return view('client.projects.show', compact('company', 'project', 'posts', 'search', 'dateFrom', 'dateTo'));
     }
 }

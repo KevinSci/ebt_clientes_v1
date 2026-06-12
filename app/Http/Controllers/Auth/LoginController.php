@@ -38,8 +38,8 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             return Auth::user()->isAdmin()
-                ? redirect()->route('admin.clients.index')
-                : redirect()->route('client.projects.index');
+                ? redirect()->route('admin.companies.index')
+                : redirect()->route('client.dashboard');
         }
 
         return back()

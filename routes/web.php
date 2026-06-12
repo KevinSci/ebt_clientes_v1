@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +18,8 @@ use App\Http\Controllers\StorageController;
 Route::get('/', function () {
     if (Auth::check()) {
         return Auth::user()->isAdmin()
-            ? redirect()->route('admin.clients.index')
-            : redirect()->route('client.projects.index');
+            ? redirect()->route('admin.companies.index')
+            : redirect()->route('client.dashboard');
     }
     return redirect()->route('login');
 });
@@ -42,28 +44,31 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        // Clients (index + show + store/create via modal + update + destroy)
-        Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
-        Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
-        Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
-        Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
-        Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+        // Companies (index + show + store/create via modal + update + destroy)
+        Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
+        Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
+        Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('companies.show');
+        Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update');
+        Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
 
-        // Projects (show, store, update, destroy a client's project)
-        Route::get('/clients/{client}/projects/{project}', [AdminProjectController::class, 'show'])
-            ->name('clients.projects.show');
-        Route::post('/clients/{client}/projects', [AdminProjectController::class, 'store'])
-            ->name('clients.projects.store');
-        Route::put('/clients/{client}/projects/{project}', [AdminProjectController::class, 'update'])
-            ->name('clients.projects.update');
-        Route::delete('/clients/{client}/projects/{project}', [AdminProjectController::class, 'destroy'])
-            ->name('clients.projects.destroy');
+        // Users
+        Route::resource('users', UserController::class)->except(['show']);
+
+        // Projects (show, store, update, destroy a company's project)
+        Route::get('/companies/{company}/projects/{project}', [AdminProjectController::class, 'show'])
+            ->name('companies.projects.show');
+        Route::post('/companies/{company}/projects', [AdminProjectController::class, 'store'])
+            ->name('companies.projects.store');
+        Route::put('/companies/{company}/projects/{project}', [AdminProjectController::class, 'update'])
+            ->name('companies.projects.update');
+        Route::delete('/companies/{company}/projects/{project}', [AdminProjectController::class, 'destroy'])
+            ->name('companies.projects.destroy');
 
         // Posts (create/update a post for a project)
-        Route::post('/clients/{client}/projects/{project}/posts', [PostController::class, 'store'])
-            ->name('clients.projects.posts.store');
-        Route::put('/clients/{client}/projects/{project}/posts/{post}', [PostController::class, 'update'])
-            ->name('clients.projects.posts.update');
+        Route::post('/companies/{company}/projects/{project}/posts', [PostController::class, 'store'])
+            ->name('companies.projects.posts.store');
+        Route::put('/companies/{company}/projects/{project}/posts/{post}', [PostController::class, 'update'])
+            ->name('companies.projects.posts.update');
 
         // Profile / Settings
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -78,9 +83,16 @@ Route::middleware(['auth', 'role:client'])
     ->name('client.')
     ->group(function () {
 
-        // Projects list and feed
-        Route::get('/projects', [ClientProjectController::class, 'index'])->name('projects.index');
-        Route::get('/projects/{project}', [ClientProjectController::class, 'show'])->name('projects.show');
+        // Dashboard (selection or redirect)
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Scoped company routes with check middleware
+        Route::middleware('company.access')->group(function () {
+            Route::get('/companies/{company}/projects', [ClientProjectController::class, 'index'])
+                ->name('companies.projects.index');
+            Route::get('/companies/{company}/projects/{project}', [ClientProjectController::class, 'show'])
+                ->name('companies.projects.show');
+        });
     });
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -57,11 +57,11 @@ class User extends Authenticatable
     // -------------------------------------------------------------------------
 
     /**
-     * A user (client) has many projects.
+     * The companies that the user has access to.
      */
-    public function projects(): HasMany
+    public function companies(): BelongsToMany
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Company::class);
     }
 
     // -------------------------------------------------------------------------

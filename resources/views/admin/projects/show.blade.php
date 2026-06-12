@@ -6,8 +6,8 @@
 
 {{-- Breadcrumb --}}
 <x-breadcrumb :items="[
-    ['label' => 'Clientes', 'url' => route('admin.clients.index')],
-    ['label' => $client->name, 'url' => route('admin.clients.show', $client)],
+    ['label' => 'Empresas', 'url' => route('admin.companies.index')],
+    ['label' => $company->name, 'url' => route('admin.companies.show', $company)],
     ['label' => $project->name],
 ]" />
 
@@ -18,8 +18,8 @@
             <div>
                 <h1 class="h4 mb-1 fw-bold">{{ $project->name }}</h1>
                 <p class="text-muted small mb-2">
-                    Cliente: <strong>{{ $client->name }}</strong>
-                    @if ($client->company_name) — {{ $client->company_name }} @endif
+                    Empresa: <strong>{{ $company->name }}</strong>
+                    @if ($company->rfc) — RFC: {{ $company->rfc }} @endif
                 </p>
                 <div class="d-flex align-items-center gap-2 mt-1">
                     <x-badge :status="$project->status" />
@@ -31,7 +31,7 @@
                         <i class="bi bi-pencil me-1"></i>Editar Proyecto
                     </button>
 
-                    <form action="{{ route('admin.clients.projects.destroy', [$client, $project]) }}" method="POST"
+                    <form action="{{ route('admin.companies.projects.destroy', [$company, $project]) }}" method="POST"
                           onsubmit="return confirm('¿Estás seguro de que deseas eliminar este proyecto y todas sus publicaciones de forma permanente?');"
                           class="d-inline-block">
                         @csrf
@@ -60,7 +60,7 @@
             <div class="card-body">
 
                 <form method="POST"
-                      action="{{ route('admin.clients.projects.posts.store', [$client, $project]) }}"
+                      action="{{ route('admin.companies.projects.posts.store', [$company, $project]) }}"
                       enctype="multipart/form-data"
                       id="form-new-post"
                       novalidate>
@@ -166,7 +166,7 @@
 
                         {{-- Modal: Edit Post --}}
                         <x-modal id="modal-edit-post-{{ $post->id }}" title="Editar Publicación" size="lg">
-                            <form method="POST" action="{{ route('admin.clients.projects.posts.update', [$client, $project, $post]) }}" 
+                            <form method="POST" action="{{ route('admin.companies.projects.posts.update', [$company, $project, $post]) }}" 
                                   enctype="multipart/form-data" 
                                   id="form-edit-post-{{ $post->id }}" 
                                   novalidate>
@@ -285,7 +285,7 @@
 
 {{-- Modal: Edit Project --}}
 <x-modal id="modal-edit-project" title="Editar Proyecto" size="md">
-    <form method="POST" action="{{ route('admin.clients.projects.update', [$client, $project]) }}" id="form-edit-project" novalidate>
+    <form method="POST" action="{{ route('admin.companies.projects.update', [$company, $project]) }}" id="form-edit-project" novalidate>
         @csrf
         @method('PUT')
         <input type="hidden" name="form_id" value="edit_project">

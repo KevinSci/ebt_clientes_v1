@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\User;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,7 +27,7 @@ class ProjectFactory extends Factory
         ];
 
         return [
-            'user_id'             => User::factory()->client(),
+            'company_id'          => Company::factory(),
             'name'                => 'Proyecto ' . fake()->bs(),
             'status'              => $status,
             'progress_percentage' => $progressMap[$status],

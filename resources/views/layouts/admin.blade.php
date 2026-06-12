@@ -2,9 +2,15 @@
 
 @section('nav-items')
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}"
-           href="{{ route('admin.clients.index') }}">
-            <i class="bi bi-people me-1"></i>Clientes
+        <a class="nav-link {{ request()->routeIs('admin.companies.*') ? 'active' : '' }}"
+           href="{{ route('admin.companies.index') }}">
+            <i class="bi bi-building me-1"></i>Empresas
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+           href="{{ route('admin.users.index') }}">
+            <i class="bi bi-people me-1"></i>Usuarios
         </a>
     </li>
 @endsection
@@ -22,10 +28,17 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="{{ route('admin.clients.index') }}"
-                       class="nav-link {{ request()->routeIs('admin.clients.*') ? 'active' : 'text-white' }}">
+                    <a href="{{ route('admin.companies.index') }}"
+                       class="nav-link {{ request()->routeIs('admin.companies.*') ? 'active' : 'text-white' }} mb-2">
+                        <i class="bi bi-building-fill me-2"></i>
+                        Empresas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.users.index') }}"
+                       class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : 'text-white' }}">
                         <i class="bi bi-people-fill me-2"></i>
-                        Clientes
+                        Usuarios
                     </a>
                 </li>
             </ul>

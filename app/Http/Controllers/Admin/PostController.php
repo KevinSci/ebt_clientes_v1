@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attachment;
 use App\Models\Post;
 use App\Models\Project;
-use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,10 +20,9 @@ class PostController extends Controller
      * `storage/app/public/attachments/{post_id}/` and registered as an
      * Attachment record with the appropriate type.
      */
-    public function store(Request $request, User $client, Project $project): RedirectResponse
+    public function store(Request $request, Company $company, Project $project): RedirectResponse
     {
-        abort_if($client->role !== 'client', 404);
-        abort_if($project->user_id !== $client->id, 404);
+        abort_if($project->company_id !== $company->id, 404);
 
         $validated = $request->validate([
             'title'         => ['required', 'string', 'max:255'],
@@ -45,17 +44,16 @@ class PostController extends Controller
         }
 
         return redirect()
-            ->route('admin.clients.projects.show', [$client, $project])
+            ->route('admin.companies.projects.show', [$company, $project])
             ->with('success', 'Publicación creada correctamente.');
     }
 
     /**
      * Update the specified post in the database.
      */
-    public function update(Request $request, User $client, Project $project, Post $post): RedirectResponse
+    public function update(Request $request, Company $company, Project $project, Post $post): RedirectResponse
     {
-        abort_if($client->role !== 'client', 404);
-        abort_if($project->user_id !== $client->id, 404);
+        abort_if($project->company_id !== $company->id, 404);
         abort_if($post->project_id !== $project->id, 404);
 
         $validated = $request->validate([
@@ -91,7 +89,7 @@ class PostController extends Controller
         }
 
         return redirect()
-            ->route('admin.clients.projects.show', [$client, $project])
+            ->route('admin.companies.projects.show', [$company, $project])
             ->with('success', 'Publicación actualizada correctamente.');
     }
 

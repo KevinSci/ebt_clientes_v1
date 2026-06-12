@@ -11,6 +11,7 @@ import { initModalReopen }        from './modules/modalReopen.js';
 import { initAttachmentDeletion } from './modules/attachmentDeletion.js';
 import { initProjectPage }        from './modules/projectPageInit.js';
 import { initClientProjectPage }  from './modules/clientProjectInit.js';
+import { initUserCompanySelector } from './modules/userCompanySelector.js';
 
 // Re-export Vanilla JS modules
 export {
@@ -22,6 +23,7 @@ export {
     initAttachmentDeletion,
     initProjectPage,
     initClientProjectPage,
+    initUserCompanySelector,
 };
 
 // Expose globally on the window object
@@ -33,6 +35,7 @@ window.initModalReopen        = initModalReopen;
 window.initAttachmentDeletion = initAttachmentDeletion;
 window.initProjectPage        = initProjectPage;
 window.initClientProjectPage  = initClientProjectPage;
+window.initUserCompanySelector = initUserCompanySelector;
 
 // Auto-initialize global modules (safe to run on every page)
 initToast();
@@ -40,6 +43,7 @@ initModalReopen();
 initAttachmentDeletion();
 initProjectPage();
 initClientProjectPage();
+initUserCompanySelector();
 
 // Import images/assets so Vite processes them
 import.meta.glob([

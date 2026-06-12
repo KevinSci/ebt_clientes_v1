@@ -21,7 +21,7 @@ class Project extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'user_id',
+        'company_id',
         'name',
         'status',
         'progress_percentage',
@@ -45,11 +45,11 @@ class Project extends Model
     // -------------------------------------------------------------------------
 
     /**
-     * A project belongs to a user (client).
+     * A project belongs to a company.
      */
-    public function user(): BelongsTo
+    public function company(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Company::class);
     }
 
     /**

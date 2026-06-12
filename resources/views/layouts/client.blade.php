@@ -1,12 +1,25 @@
 @extends('layouts.app')
 
 @section('nav-items')
-    <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('client.projects.*') ? 'active' : '' }}"
-           href="{{ route('client.projects.index') }}">
-            <i class="bi bi-folder me-1"></i>Mis Proyectos
-        </a>
-    </li>
+    @php
+        $company = request()->route('company');
+    @endphp
+    @if ($company)
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('client.companies.projects.*') ? 'active' : '' }}"
+               href="{{ route('client.companies.projects.index', $company) }}">
+                <i class="bi bi-folder me-1"></i>Mis Proyectos
+            </a>
+        </li>
+    @endif
+    @if (auth()->check() && auth()->user()->companies()->count() > 1)
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('client.dashboard') ? 'active' : '' }}" 
+               href="{{ route('client.dashboard') }}">
+                <i class="bi bi-arrow-left-right me-1"></i>Cambiar Empresa
+            </a>
+        </li>
+    @endif
 @endsection
 
 @section('content')

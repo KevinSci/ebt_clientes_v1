@@ -24,8 +24,8 @@ class RoleMiddleware
         if (auth()->user()->role !== $role) {
             // Redirect to the correct panel based on actual role
             return auth()->user()->isAdmin()
-                ? redirect()->route('admin.clients.index')
-                : redirect()->route('client.projects.index');
+                ? redirect()->route('admin.companies.index')
+                : redirect()->route('client.dashboard');
         }
 
         return $next($request);

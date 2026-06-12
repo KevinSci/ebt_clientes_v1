@@ -7,7 +7,7 @@
 
 {{-- Breadcrumb --}}
 <x-breadcrumb :items="[
-    ['label' => 'Mis Proyectos', 'url' => route('client.projects.index')],
+    ['label' => 'Mis Proyectos', 'url' => route('client.companies.projects.index', $company)],
     ['label' => $project->name],
 ]" class="mt-3" />
 
@@ -19,7 +19,7 @@
                 <h1 class="h5 fw-bold mb-1">{{ $project->name }}</h1>
                 <x-badge :status="$project->status" />
             </div>
-            <a href="{{ route('client.projects.index') }}" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ route('client.companies.projects.index', $company) }}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i>Volver
             </a>
         </div>
@@ -30,7 +30,7 @@
 {{-- ── Filters (GET-based) ──────────────────────────────────────────────── --}}
 <div class="card mb-4">
     <div class="card-body">
-        <form method="GET" action="{{ route('client.projects.show', $project) }}"
+        <form method="GET" action="{{ route('client.companies.projects.show', [$company, $project]) }}"
               id="feed-filter-form" class="row g-2 align-items-end">
 
             <div class="col-12 col-sm-6 col-md-4">
@@ -60,7 +60,7 @@
                     <i class="bi bi-funnel me-1"></i>Filtrar
                 </button>
                 @if ($search || $dateFrom || $dateTo)
-                    <a href="{{ route('client.projects.show', $project) }}"
+                    <a href="{{ route('client.companies.projects.show', [$company, $project]) }}"
                        class="btn btn-outline-secondary btn-sm" aria-label="Limpiar filtros">
                         <i class="bi bi-x-lg"></i>
                     </a>

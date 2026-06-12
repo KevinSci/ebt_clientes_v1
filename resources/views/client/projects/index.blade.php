@@ -8,11 +8,9 @@
 {{-- Page header --}}
 <div class="mb-4 mt-3">
     <h1 class="h4 mb-1">Mis Proyectos</h1>
-    @if (auth()->user()->company_name)
-        <p class="text-muted small mb-0">
-            <i class="bi bi-building me-1"></i>{{ auth()->user()->company_name }}
-        </p>
-    @endif
+    <p class="text-muted small mb-0">
+        <i class="bi bi-building me-1"></i>{{ $company->name }}
+    </p>
 </div>
 
 {{-- ── Active projects ──────────────────────────────────────────────────── --}}
@@ -30,7 +28,7 @@
                 <div class="col-12 col-md-6">
                     <x-project-card 
                         :project="$project" 
-                        :href="route('client.projects.show', $project)" 
+                        :href="route('client.companies.projects.show', [$company, $project])" 
                         linkText="Ver feed" 
                     />
                 </div>
@@ -53,7 +51,7 @@
             <div class="col-12 col-md-6">
                 <x-project-card 
                     :project="$project" 
-                    :href="route('client.projects.show', $project)" 
+                    :href="route('client.companies.projects.show', [$company, $project])" 
                     :historical="true" 
                 />
             </div>

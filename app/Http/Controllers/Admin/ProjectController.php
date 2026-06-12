@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -12,12 +12,10 @@ use Illuminate\View\View;
 class ProjectController extends Controller
 {
     /**
-     * Store a newly created project in the database for the given client.
+     * Store a newly created project in the database for the given company.
      */
-    public function store(Request $request, User $client): RedirectResponse
+    public function store(Request $request, Company $company): RedirectResponse
     {
-        abort_if($client->role !== 'client', 404);
-
         $validated = $request->validate([
             'name'                => ['required', 'string', 'max:255'],
             'status'              => ['required', 'string', 'in:active,paused,completed'],
@@ -25,7 +23,7 @@ class ProjectController extends Controller
             'created_at'          => ['nullable', 'date'],
         ]);
 
-        $client->projects()->create([
+        $company->projects()->create([
             'name'                => $validated['name'],
             'status'              => $validated['status'],
             'progress_percentage' => $validated['progress_percentage'],
@@ -33,48 +31,46 @@ class ProjectController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.clients.show', $client)
+            ->route('admin.companies.show', $company)
             ->with('success', 'Proyecto creado correctamente.');
     }
 
     /**
      * Remove the specified project from the database.
      */
-    public function destroy(User $client, Project $project): RedirectResponse
+    public function destroy(Company $company, Project $project): RedirectResponse
     {
-        abort_if($client->role !== 'client', 404);
-        abort_if($project->user_id !== $client->id, 404);
+        abort_if($project->company_id !== $company->id, 404);
 
         $project->delete();
 
         return redirect()
-            ->route('admin.clients.show', $client)
+            ->route('admin.companies.show', $company)
             ->with('success', 'Proyecto eliminado correctamente.');
     }
+
     /**
      * Display a specific project with its posts and attachments.
      *
-     * The client ownership is verified to ensure data isolation.
+     * The company ownership is verified to ensure data isolation.
      */
-    public function show(User $client, Project $project): View
+    public function show(Company $company, Project $project): View
     {
-        abort_if($client->role !== 'client', 404);
-        abort_if($project->user_id !== $client->id, 404);
+        abort_if($project->company_id !== $company->id, 404);
 
         $project->load([
             'posts' => fn ($q) => $q->with('attachments')->latest('published_at'),
         ]);
 
-        return view('admin.projects.show', compact('client', 'project'));
+        return view('admin.projects.show', compact('company', 'project'));
     }
 
     /**
      * Update the specified project in the database.
      */
-    public function update(Request $request, User $client, Project $project): RedirectResponse
+    public function update(Request $request, Company $company, Project $project): RedirectResponse
     {
-        abort_if($client->role !== 'client', 404);
-        abort_if($project->user_id !== $client->id, 404);
+        abort_if($project->company_id !== $company->id, 404);
 
         $validated = $request->validate([
             'name'                => ['required', 'string', 'max:255'],
@@ -91,7 +87,7 @@ class ProjectController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.clients.projects.show', [$client, $project])
+            ->route('admin.companies.projects.show', [$company, $project])
             ->with('success', 'Proyecto actualizado correctamente.');
     }
 }

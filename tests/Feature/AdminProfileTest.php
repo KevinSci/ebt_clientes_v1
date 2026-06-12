@@ -27,7 +27,7 @@ it('prevents client from accessing the admin profile edit page', function () {
 
     $response = $this->get(route('admin.profile.edit'));
 
-    $response->assertRedirect(route('client.projects.index'));
+    $response->assertRedirect(route('client.dashboard'));
 });
 
 it('allows admin to update their profile name and email', function () {
