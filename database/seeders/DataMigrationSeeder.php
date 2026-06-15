@@ -14,7 +14,10 @@ class DataMigrationSeeder extends Seeder
      */
     public function run(): void
     {
-        $clients = DB::table('users')->where('role', 'client')->get();
+        $clients = DB::table('users')
+            ->where('role', 'client')
+            ->whereNull('deleted_at')
+            ->get();
 
         foreach ($clients as $client) {
             // Check if user is already linked in pivot table

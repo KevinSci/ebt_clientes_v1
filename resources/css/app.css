@@ -385,3 +385,42 @@ body.overflow-x-hidden {
     font-weight: 600;
     line-height: inherit;
 }
+
+/* ── Breadcrumb Chevron ─────────────────────────────────────────────────── */
+.breadcrumb-chevron {
+    --bs-breadcrumb-divider: "";
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.breadcrumb-chevron::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+.breadcrumb-chevron .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.breadcrumb-chevron .breadcrumb-item a {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-chevron .breadcrumb-item + .breadcrumb-item {
+    padding-left: .5rem;
+}
+
+.breadcrumb-chevron .breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    margin-right: .5rem;
+    content: "";
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d'%3E%3Cpath fill-rule='evenodd' d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 8px 16px;
+}

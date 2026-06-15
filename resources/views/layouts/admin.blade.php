@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @section('nav-items')
-    <li class="nav-item">
+    <li class="nav-item d-lg-none">
         <a class="nav-link {{ request()->routeIs('admin.companies.*') ? 'active' : '' }}"
            href="{{ route('admin.companies.index') }}">
             <i class="bi bi-building me-1"></i>Empresas
         </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item d-lg-none">
         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
            href="{{ route('admin.users.index') }}">
             <i class="bi bi-people me-1"></i>Usuarios

@@ -37,7 +37,7 @@ class PostController extends Controller
             'description'  => $validated['description'],
             'published_at' => $validated['published_at'] ?? now(),
         ]);
-
+ 
         // Store uploaded file attachments
         if ($request->hasFile('attachments')) {
             $this->storeAttachments($post, $request->file('attachments'));
