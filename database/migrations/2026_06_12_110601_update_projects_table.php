@@ -15,34 +15,42 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Add company_id as nullable first
-        Schema::table('projects', function (Blueprint $table) {
-            $table->foreignId('company_id')->after('id')->nullable()->constrained()->cascadeOnDelete();
-        });
+        if (!Schema::hasColumn('projects', 'company_id')) {
+            Schema::table('projects', function (Blueprint $table) {
+                $table->foreignId('company_id')->after('id')->nullable()->constrained()->cascadeOnDelete();
+            });
+        }
 
         // 2. Run the DataMigrationSeeder to populate companies and company_user
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\DataMigrationSeeder']);
+        Artisan::call('db:seed', [
+            '--class' => 'Database\\Seeders\\DataMigrationSeeder',
+            '--force' => true,
+        ]);
 
         // 3. Map projects.user_id to company_id using company_user pivot
         $projects = DB::table('projects')->get();
         foreach ($projects as $project) {
-            $companyUser = DB::table('company_user')
-                ->where('user_id', $project->user_id)
-                ->first();
+            // Check if user_id column still exists (it might not if rerun)
+            if (isset($project->user_id)) {
+                $companyUser = DB::table('company_user')
+                    ->where('user_id', $project->user_id)
+                    ->first();
 
-            if ($companyUser) {
-                DB::table('projects')
-                    ->where('id', $project->id)
-                    ->update(['company_id' => $companyUser->company_id]);
+                if ($companyUser) {
+                    DB::table('projects')
+                        ->where('id', $project->id)
+                        ->update(['company_id' => $companyUser->company_id]);
+                }
             }
         }
 
         // 4. Drop user_id foreign key constraint and column
-        Schema::table('projects', function (Blueprint $table) {
-            // Drop foreign key and column. 
-            // In Laravel, dropping a foreignId column requires dropping the foreign key constraint first
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        if (Schema::hasColumn('projects', 'user_id')) {
+            Schema::table('projects', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->dropColumn('user_id');
+            });
+        }
 
         // 5. Change company_id to not nullable
         Schema::table('projects', function (Blueprint $table) {
