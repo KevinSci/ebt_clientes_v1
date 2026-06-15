@@ -52,7 +52,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 g-md-4" id="companies-grid">
         @foreach ($companies as $company)
             <div class="col">
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card h-100 shadow-sm border-0" id="company-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <x-avatar size="md" variant="primary" icon="bi-building" class="me-3" />
@@ -80,9 +80,6 @@
                                 <i class="bi bi-telephone me-2"></i>{{ $company->phone }}
                             </p>
                         @endif
-                        <p class="card-text small text-muted mb-3">
-                            <i class="bi bi-patch-check me-2"></i>Régimen: {{ $company->tax_regime === 'moral' ? 'Persona Moral' : 'Persona Física' }}
-                        </p>
                     </div>
                     <div class="card-footer bg-transparent border-top-0 pt-0 d-flex justify-content-between align-items-center">
                         <span class="badge text-bg-light border text-secondary">

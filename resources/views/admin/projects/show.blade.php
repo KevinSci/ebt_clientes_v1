@@ -19,7 +19,6 @@
                 <h1 class="h4 mb-1 fw-bold">{{ $project->name }}</h1>
                 <p class="text-muted small mb-2">
                     Empresa: <strong>{{ $company->name }}</strong>
-                    @if ($company->rfc) — RFC: {{ $company->rfc }} @endif
                 </p>
                 <div class="d-flex align-items-center gap-2 mt-1">
                     <x-badge :status="$project->status" />
@@ -28,7 +27,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#modal-edit-project"
                             id="btn-open-edit-project">
-                        <i class="bi bi-pencil me-1"></i>Editar Proyecto
+                        <i class="bi bi-pencil me-1"></i>Editar
                     </button>
 
                     <form action="{{ route('admin.companies.projects.destroy', [$company, $project]) }}" method="POST"
@@ -37,7 +36,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-trash3 me-1"></i>Eliminar Proyecto
+                            <i class="bi bi-trash3 me-1"></i>Eliminar
                         </button>
                     </form>
                 </div>
@@ -132,25 +131,28 @@
 
         @if ($project->posts->isEmpty())
             <x-alert type="info">Aún no hay publicaciones en este proyecto.</x-alert>
-@else
+        @else
             <x-scrollable maxHeight="650px">
                 <div class="d-flex flex-column gap-3">
                     @foreach ($project->posts as $post)
                         <div class="card mb-3">
                             <div class="card-body">
-                                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-                                    <h3 class="h6 mb-0 fw-bold">{{ $post->title }}</h3>
-                                    <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-start justify-content-between gap-3 mb-2">
+                                    <div class="min-w-0 flex-grow-1">
+                                        <h3 class="h6 mb-1 fw-bold text-dark text-break">{{ $post->title }}</h3>
                                         @if ($post->published_at)
-                                            <span class="small text-muted text-nowrap">
+                                            <span class="small text-muted text-nowrap d-inline-block mt-1">
                                                 <i class="bi bi-calendar3 me-1"></i>
                                                 {{ $post->published_at->format('d/m/Y H:i') }}
                                             </span>
                                         @endif
-                                        <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 ebt-btn-xs"
+                                    </div>
+                                    <div class="flex-shrink-0 ms-2">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 d-flex align-items-center gap-1"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#modal-edit-post-{{ $post->id }}">
-                                            <i class="bi bi-pencil me-1"></i>Editar
+                                            <i class="bi bi-pencil"></i>
+                                            <span class="d-none d-sm-inline">Editar</span>
                                         </button>
                                     </div>
                                 </div>

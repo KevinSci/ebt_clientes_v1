@@ -26,7 +26,7 @@ class PostController extends Controller
 
         $validated = $request->validate([
             'title'         => ['required', 'string', 'max:255'],
-            'description'   => ['required', 'string'],
+            'description'   => ['required', 'string', 'max:20000'],
             'published_at'  => ['nullable', 'date'],
             'attachments'   => ['nullable', 'array', 'max:20'],
             'attachments.*' => ['file', 'max:20480', 'extensions:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,zip,rar'],
