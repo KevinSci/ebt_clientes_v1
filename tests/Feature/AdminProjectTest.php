@@ -228,3 +228,50 @@ it('allows admin to create a post with docx, xlsx, zip, rar attachments', functi
     $this->assertDatabaseHas('attachments', ['file_name' => 'archivos.zip', 'type' => 'document']);
     $this->assertDatabaseHas('attachments', ['file_name' => 'respaldo.rar', 'type' => 'document']);
 });
+
+it('allows admin to delete a post', function () {
+    $project = Project::factory()->create([
+        'company_id' => $this->company->id,
+    ]);
+
+    $post = Post::create([
+        'project_id'  => $project->id,
+        'title'       => 'Post to delete',
+        'description' => 'Test description',
+    ]);
+
+    $this->actingAs($this->admin);
+
+    $response = $this->delete(route('admin.companies.projects.posts.destroy', [$this->company, $project, $post]));
+
+    $response->assertRedirect(route('admin.companies.projects.show', [$this->company, $project]));
+    $response->assertSessionHas('success', 'Publicación eliminada correctamente.');
+
+    $this->assertSoftDeleted('posts', [
+        'id' => $post->id,
+    ]);
+});
+
+it('prevents client from deleting a post', function () {
+    $project = Project::factory()->create([
+        'company_id' => $this->company->id,
+    ]);
+
+    $post = Post::create([
+        'project_id'  => $project->id,
+        'title'       => 'Post to delete',
+        'description' => 'Test description',
+    ]);
+
+    $this->actingAs($this->client);
+
+    $response = $this->delete(route('admin.companies.projects.posts.destroy', [$this->company, $project, $post]));
+
+    $response->assertRedirect(route('client.dashboard'));
+
+    $this->assertDatabaseHas('posts', [
+        'id' => $post->id,
+        'deleted_at' => null,
+    ]);
+});
+

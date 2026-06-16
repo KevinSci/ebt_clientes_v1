@@ -267,6 +267,15 @@
                             </form>
 
                             <x-slot:footer>
+                                <form action="{{ route('admin.companies.projects.posts.destroy', [$company, $project, $post]) }}" method="POST"
+                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta publicación de forma permanente?');"
+                                      class="d-inline-block me-auto">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash3 me-1"></i>Eliminar Publicación
+                                    </button>
+                                </form>
                                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                     Cancelar
                                 </button>

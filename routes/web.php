@@ -69,6 +69,8 @@ Route::middleware(['auth', 'role:admin'])
             ->name('companies.projects.posts.store');
         Route::put('/companies/{company}/projects/{project}/posts/{post}', [PostController::class, 'update'])
             ->name('companies.projects.posts.update');
+        Route::delete('/companies/{company}/projects/{project}/posts/{post}', [PostController::class, 'destroy'])
+            ->name('companies.projects.posts.destroy');
 
         // Profile / Settings
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -94,6 +94,22 @@ class PostController extends Controller
     }
 
     /**
+     * Remove the specified post from the database.
+     */
+    public function destroy(Company $company, Project $project, Post $post): RedirectResponse
+    {
+        abort_if($project->company_id !== $company->id, 404);
+        abort_if($post->project_id !== $project->id, 404);
+
+        $post->attachments()->delete();
+        $post->delete();
+
+        return redirect()
+            ->route('admin.companies.projects.show', [$company, $project])
+            ->with('success', 'Publicación eliminada correctamente.');
+    }
+
+    /**
      * Store uploaded file attachments for a given post.
      *
      * Each file is stored in `storage/app/public/attachments/{post_id}/`
