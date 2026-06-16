@@ -21,10 +21,17 @@
         </p>
         <div class="list-group">
             @foreach ($documents as $doc)
+                @php
+                    $isPdf = $doc->isPdf();
+                @endphp
                 <a href="{{ $doc->url }}"
                    target="_blank"
                    rel="noopener noreferrer"
-                   class="list-group-item list-group-item-action d-flex align-items-center gap-2">
+                   class="list-group-item list-group-item-action d-flex align-items-center gap-2 {{ $isPdf ? 'ebt-pdf-link' : '' }}"
+                   @if($isPdf)
+                       data-file-path="{{ $doc->file_path }}"
+                       data-file-name="{{ $doc->file_name }}"
+                   @endif>
                     <i class="bi {{ $doc->icon['icon'] }} {{ $doc->icon['color'] }}"></i>
                     <span class="text-truncate flex-grow-1">{{ $doc->file_name }}</span>
                     <i class="bi bi-download text-muted"></i>

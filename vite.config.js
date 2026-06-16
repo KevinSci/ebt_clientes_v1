@@ -7,7 +7,9 @@ export default defineConfig({
             input: [
                 'resources/css/bootstrap.scss',
                 'resources/css/app.css',
+                'resources/css/pdf-viewer.css',
                 'resources/js/app.js',
+                'resources/js/pdf-viewer.js',
             ],
             refresh: true,
         }),

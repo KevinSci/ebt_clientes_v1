@@ -104,4 +104,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/storage/{path}', [StorageController::class, 'show'])
         ->where('path', '.*')
         ->name('storage.show');
+
+    Route::get('/pdf-viewer', function (Illuminate\Http\Request $request) {
+        $filePath = $request->query('file');
+        $fileName = $request->query('name') ?: basename($filePath);
+        
+        if (!$filePath || str_contains($filePath, '..')) {
+             abort(404);
+        }
+ 
+        if (!Illuminate\Support\Facades\Storage::disk('public')->exists($filePath)) {
+             abort(404);
+        }
+ 
+        return view('pdf.viewer', [
+             'filePath' => $filePath,
+             'fileName' => $fileName
+        ]);
+    })->name('pdf.viewer');
 });

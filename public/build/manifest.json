@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-DBxz6Yas.css",
+    "file": "assets/app-XIx7gwkk.css",
     "name": "app",
     "names": [
       "app.css"
@@ -17,10 +17,25 @@
     "src": "resources/css/bootstrap.scss",
     "isEntry": true
   },
+  "resources/css/pdf-viewer.css": {
+    "file": "assets/pdf-viewer-DNhfV8pm.css",
+    "name": "pdf-viewer",
+    "names": [
+      "pdf-viewer.css"
+    ],
+    "src": "resources/css/pdf-viewer.css",
+    "isEntry": true
+  },
   "resources/js/app.js": {
-    "file": "assets/app-CsvAlgeG.js",
+    "file": "assets/app-CXD_5UDl.js",
     "name": "app",
     "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/pdf-viewer.js": {
+    "file": "assets/pdf-viewer-BP8SFgLx.js",
+    "name": "pdf-viewer",
+    "src": "resources/js/pdf-viewer.js",
     "isEntry": true
   }
 }

@@ -56,6 +56,14 @@ class Attachment extends Model
     }
 
     /**
+     * Determine if this attachment is a PDF.
+     */
+    public function isPdf(): bool
+    {
+        return strtolower(pathinfo($this->file_name, PATHINFO_EXTENSION)) === 'pdf';
+    }
+
+    /**
      * Get the full public URL for this attachment.
      */
     public function getUrlAttribute(): string
