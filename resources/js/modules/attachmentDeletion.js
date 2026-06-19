@@ -60,4 +60,44 @@ export function initAttachmentDeletion() {
             btn.style.backgroundColor = '';
         }
     });
+
+    // Delegación para eliminar carpetas completas
+    document.addEventListener('click', function (event) {
+        const btn = event.target.closest('.ebt-folder-delete-toggle');
+        if (!btn) return;
+
+        const folderSlug = btn.dataset.folderSlug;
+        if (!folderSlug) return;
+
+        const checkboxes = document.querySelectorAll('.ebt-folder-del-check-' + folderSlug);
+        const card       = btn.closest('.ebt-existing-folder');
+        const overlay    = document.getElementById('del-folder-overlay-' + folderSlug);
+
+        if (checkboxes.length === 0 || !card) return;
+
+        const targetChecked = !checkboxes[0].checked;
+        checkboxes.forEach(cb => cb.checked = targetChecked);
+
+        if (targetChecked) {
+            card.classList.add('border-danger');
+            card.style.opacity = '0.5';
+            if (overlay) {
+                overlay.classList.remove('d-none');
+                overlay.classList.add('d-flex');
+            }
+            btn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i>';
+            btn.title = 'Deshacer';
+            btn.style.backgroundColor = '#6c757d';
+        } else {
+            card.classList.remove('border-danger');
+            card.style.opacity = '1';
+            if (overlay) {
+                overlay.classList.remove('d-flex');
+                overlay.classList.add('d-none');
+            }
+            btn.innerHTML = '<i class="bi bi-x"></i>';
+            btn.title = 'Marcar carpeta para eliminar';
+            btn.style.backgroundColor = '';
+        }
+    });
 }

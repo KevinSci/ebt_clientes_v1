@@ -91,14 +91,21 @@
                         <label for="attachments" class="form-label fw-medium">
                             Archivos adjuntos
                         </label>
-                        <input
-                            type="file"
-                            id="attachments"
-                            name="attachments[]"
-                            class="form-control @error('attachments') is-invalid @enderror @error('attachments.*') is-invalid @enderror"
-                            multiple
-                            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
-                        >
+                        <div class="d-flex gap-2 mb-2">
+                            <input
+                                type="file"
+                                id="attachments"
+                                name="attachments[]"
+                                class="form-control @error('attachments') is-invalid @enderror @error('attachments.*') is-invalid @enderror"
+                                multiple
+                                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
+                            >
+                            <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1 flex-shrink-0" onclick="document.getElementById('folder-picker').click();">
+                                <i class="bi bi-folder-plus"></i>
+                                <span class="d-none d-sm-inline">Subir Carpeta</span>
+                            </button>
+                            <input type="file" id="folder-picker" webkitdirectory directory multiple class="d-none">
+                        </div>
                         <div class="form-text">
                             Imágenes (JPG, PNG, GIF, WebP), PDFs, Word, Excel y archivos comprimidos (ZIP, RAR). Máx. 20 MB por archivo.
                         </div>
@@ -200,21 +207,62 @@
 
                                 {{-- Manage existing attachments --}}
                                 @if($post->attachments->count() > 0)
+                                    @php
+                                        $existingFolders = $post->attachments->filter(fn($a) => $a->folder_name !== null)->groupBy('folder_name');
+                                        $existingIndividuals = $post->attachments->filter(fn($a) => $a->folder_name === null);
+                                    @endphp
                                     <div class="mb-3">
                                         <label class="form-label fw-medium">Evidencias actuales (Marcar para eliminar):</label>
                                         <div class="row g-2">
-                                            @foreach ($post->attachments as $attachment)
+                                            {{-- Carpetas existentes --}}
+                                            @foreach ($existingFolders as $folderName => $files)
+                                                <div class="col-12 col-sm-6" id="folder-wrapper-{{ Str::slug($folderName) }}">
+                                                    <div class="card h-100 p-2 position-relative border ebt-existing-folder">
+                                                        @foreach($files as $file)
+                                                            <input class="d-none ebt-folder-del-check-{{ Str::slug($folderName) }}" type="checkbox" name="delete_attachments[]" value="{{ $file->id }}" id="del-att-{{ $file->id }}">
+                                                        @endforeach
+                                                        
+                                                        <button type="button" 
+                                                                class="ebt-file-preview__delete-btn ebt-folder-delete-toggle" 
+                                                                data-folder-slug="{{ Str::slug($folderName) }}"
+                                                                title="Marcar carpeta para eliminar">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+
+                                                        <div class="d-flex align-items-center gap-2 py-1">
+                                                            <i class="bi bi-folder-fill text-warning fs-3"></i>
+                                                            <div class="min-w-0">
+                                                                <span class="fw-semibold text-dark text-truncate d-block small" title="{{ $folderName }}">
+                                                                    {{ $folderName }}
+                                                                </span>
+                                                                <span class="text-muted small d-block" style="font-size: 0.75rem;">
+                                                                    {{ $files->count() }} archivos
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="position-absolute inset-0 bg-danger bg-opacity-10 d-none flex-column align-items-center justify-content-center text-danger rounded ebt-delete-overlay" 
+                                                             id="del-folder-overlay-{{ Str::slug($folderName) }}">
+                                                            <span class="fw-bold ebt-delete-overlay__label" style="font-size: 0.8rem;">
+                                                                ELIMINAR CARPETA
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            {{-- Archivos individuales existentes --}}
+                                            @foreach ($existingIndividuals as $attachment)
                                                 <div class="col-6 col-sm-4 col-md-3" id="attachment-wrapper-{{ $attachment->id }}">
                                                     <div class="card h-100 p-1 position-relative border ebt-existing-attachment">
-                                                        <!-- Hidden checkbox to submit deletion state -->
                                                         <input class="d-none" type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" id="del-att-{{ $attachment->id }}">
                                                         
-                                        <button type="button" 
-                                                class="ebt-file-preview__delete-btn ebt-attachment-delete-toggle" 
-                                                data-attachment-id="{{ $attachment->id }}"
-                                                title="Marcar para eliminar">
-                                            <i class="bi bi-x"></i>
-                                        </button>
+                                                        <button type="button" 
+                                                                class="ebt-file-preview__delete-btn ebt-attachment-delete-toggle" 
+                                                                data-attachment-id="{{ $attachment->id }}"
+                                                                title="Marcar para eliminar">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
 
                                                         @if ($attachment->isImage())
                                                              <img src="{{ $attachment->url }}" class="card-img-top object-fit-cover rounded ebt-attachment-thumb" alt="{{ $attachment->file_name }}">
@@ -229,7 +277,6 @@
                                                             </span>
                                                         </div>
 
-                                                        <!-- Overlay indicator to show marked for deletion -->
                                                         <div class="position-absolute inset-0 bg-danger bg-opacity-10 d-none flex-column align-items-center justify-content-center text-danger rounded ebt-delete-overlay" 
                                                              id="del-overlay-{{ $attachment->id }}">
                                                             <span class="fw-bold ebt-delete-overlay__label">
@@ -248,14 +295,21 @@
                                     <label for="attachments-{{ $post->id }}" class="form-label fw-medium">
                                         Agregar nuevos archivos adjuntos
                                     </label>
-                                    <input
-                                        type="file"
-                                        id="attachments-{{ $post->id }}"
-                                        name="attachments[]"
-                                        class="form-control"
-                                        multiple
-                                        accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
-                                    >
+                                    <div class="d-flex gap-2 mb-2">
+                                        <input
+                                            type="file"
+                                            id="attachments-{{ $post->id }}"
+                                            name="attachments[]"
+                                            class="form-control"
+                                            multiple
+                                            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
+                                        >
+                                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1 flex-shrink-0" onclick="document.getElementById('folder-picker-{{ $post->id }}').click();">
+                                            <i class="bi bi-folder-plus"></i>
+                                            <span class="d-none d-sm-inline">Subir Carpeta</span>
+                                        </button>
+                                        <input type="file" id="folder-picker-{{ $post->id }}" webkitdirectory directory multiple class="d-none">
+                                    </div>
                                     <div class="form-text">
                                         Imágenes (JPG, PNG, GIF, WebP), PDFs, Word, Excel y archivos comprimidos (ZIP, RAR). Máx. 20 MB por archivo.
                                     </div>
@@ -293,6 +347,7 @@
 </div>
 
 <x-image-viewer-modal title="Vista de imagen" />
+<x-folder-viewer-modal title="Contenido de Carpeta" />
 
 {{-- Modal: Edit Project --}}
 <x-modal id="modal-edit-project" title="Editar Proyecto" size="md">
@@ -329,8 +384,14 @@
     </x-slot:footer>
 </x-modal>
 
-{{-- Data attributes for JS module initialization (projectPageInit.js, modalReopen.js) --}}
-<div id="project-page-init" data-post-ids="{{ $project->posts->pluck('id')->toJson() }}"></div>
+{{-- Data attributes for JS module initialization (projectPageInit.js, modalReopen.js, folderUploader.js) --}}
+<div id="project-page-init"
+     data-post-ids="{{ $project->posts->pluck('id')->toJson() }}"
+     data-ajax-store-url="{{ route('admin.companies.projects.posts.store-ajax', [$company, $project]) }}"
+     data-ajax-update-url-template="{{ route('admin.companies.projects.posts.update-ajax', [$company, $project, '__POST_ID__']) }}"
+     data-upload-url-template="{{ route('admin.companies.projects.posts.attachments.upload', [$company, $project, '__POST_ID__']) }}"
+     data-redirect-url="{{ route('admin.companies.projects.show', [$company, $project]) }}">
+</div>
 
 @if ($errors->any())
     <div data-reopen-form-id="{{ old('form_id') }}"

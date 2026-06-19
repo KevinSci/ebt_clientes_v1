@@ -13,6 +13,8 @@ import { initProjectPage }        from './modules/projectPageInit.js';
 import { initClientProjectPage }  from './modules/clientProjectInit.js';
 import { initUserCompanySelector } from './modules/userCompanySelector.js';
 import { initPdfViewer }          from './modules/pdfViewer.js';
+import { initFolderViewer }       from './modules/folderViewer.js';
+import { initFolderUploader }     from './modules/folderUploader.js';
 
 // Re-export Vanilla JS modules
 export {
@@ -26,6 +28,8 @@ export {
     initClientProjectPage,
     initUserCompanySelector,
     initPdfViewer,
+    initFolderViewer,
+    initFolderUploader,
 };
 
 // Expose globally on the window object
@@ -39,6 +43,8 @@ window.initProjectPage        = initProjectPage;
 window.initClientProjectPage  = initClientProjectPage;
 window.initUserCompanySelector = initUserCompanySelector;
 window.initPdfViewer          = initPdfViewer;
+window.initFolderViewer       = initFolderViewer;
+window.initFolderUploader     = initFolderUploader;
 
 // Auto-initialize global modules (safe to run on every page)
 initToast();

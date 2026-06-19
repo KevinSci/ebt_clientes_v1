@@ -24,5 +24,9 @@ export function initClientProjectPage() {
         if (typeof window.initImageViewer === 'function') {
             window.initImageViewer('modal-image-viewer', 'viewer-img', 'viewer-filename', 'btn-viewer-download');
         }
+
+        if (typeof window.initFolderViewer === 'function') {
+            window.initFolderViewer('modal-folder-viewer', 'modal-folder-viewer-label', 'folder-viewer-body');
+        }
     });
 }

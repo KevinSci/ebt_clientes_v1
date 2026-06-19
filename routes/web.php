@@ -72,6 +72,14 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/companies/{company}/projects/{project}/posts/{post}', [PostController::class, 'destroy'])
             ->name('companies.projects.posts.destroy');
 
+        // Async folder upload endpoints (bypass PHP max_file_uploads limit)
+        Route::post('/companies/{company}/projects/{project}/posts/ajax', [PostController::class, 'storeAjax'])
+            ->name('companies.projects.posts.store-ajax');
+        Route::put('/companies/{company}/projects/{project}/posts/{post}/ajax', [PostController::class, 'updateAjax'])
+            ->name('companies.projects.posts.update-ajax');
+        Route::post('/companies/{company}/projects/{project}/posts/{post}/attachments/upload', [PostController::class, 'uploadAttachment'])
+            ->name('companies.projects.posts.attachments.upload');
+
         // Profile / Settings
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

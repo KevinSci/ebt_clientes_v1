@@ -149,6 +149,7 @@
 @endif
 
 <x-image-viewer-modal title="Imagen" />
+<x-folder-viewer-modal title="Contenido de Carpeta" />
 
 <div id="client-project-init"></div>
 @endsection

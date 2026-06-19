@@ -21,6 +21,8 @@ class Attachment extends Model
         'file_name',
         'file_path',
         'type',
+        'folder_name',
+        'folder_path',
     ];
 
     // -------------------------------------------------------------------------
@@ -38,6 +40,43 @@ class Attachment extends Model
     // -------------------------------------------------------------------------
     // Helper Methods
     // -------------------------------------------------------------------------
+
+    /**
+     * Determine if this attachment belongs to a folder.
+     */
+    public function isFromFolder(): bool
+    {
+        return $this->folder_name !== null;
+    }
+
+    /**
+     * Get the relative display path for folder files (omitting root folder name if needed).
+     */
+    public function getRelativeDisplayPath(): string
+    {
+        if (!$this->isFromFolder()) {
+            return $this->file_name;
+        }
+
+        // Si folder_path ya incluye folder_name, por ejemplo "Fotos/Sub", podemos quitar la parte de la raíz para mostrar sólo el resto,
+        // o si queremos mostrar la ruta relativa completa a partir del nombre de la carpeta raíz.
+        // Por ejemplo, si folder_path es "Fotos/Sub" y folder_name es "Fotos", la ruta relativa a mostrar podría ser "Sub/file.ext"
+        // o simplemente conservar folder_path/file_name.
+        // Mantengamos una lógica que muestre la subruta relativa (ej: "Subcarpeta/archivo.pdf").
+        $root = $this->folder_name;
+        $path = $this->folder_path;
+
+        if ($path === $root) {
+            return $this->file_name;
+        }
+
+        if (str_starts_with($path, $root . '/')) {
+            $subPath = substr($path, strlen($root) + 1);
+            return $subPath . '/' . $this->file_name;
+        }
+
+        return $path . '/' . $this->file_name;
+    }
 
     /**
      * Determine if this attachment is an image.

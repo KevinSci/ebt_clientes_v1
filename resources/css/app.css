@@ -424,3 +424,93 @@ body.overflow-x-hidden {
     background-repeat: no-repeat;
     background-size: 8px 16px;
 }
+
+/* ── Folder System Styles ────────────────────────────────────────────────── */
+.ebt-file-preview__item--folder {
+    min-height: 100px;
+    justify-content: center;
+    border-color: #ffeeba;
+    background-color: #fff9eb;
+}
+
+.ebt-folder-chip {
+    transition: all 0.2s ease-in-out;
+    border-color: #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.ebt-folder-chip:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    transform: translateY(-1px);
+}
+
+.ebt-existing-folder {
+    transition: border-color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+    min-height: 60px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* ── Folder Upload Toast responsiveness ─────────────────────────────────── */
+#ebt-folder-upload-wrapper {
+    width: 100%;
+    max-width: 380px;
+    box-sizing: border-box;
+}
+
+#ebt-folder-upload-wrapper .toast {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+@media (max-width: 576px) {
+    #ebt-folder-upload-wrapper {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 1rem !important;
+    }
+}
+
+/* ── Tree View Navigation Styles ────────────────────────────────────────── */
+.ebt-tree-row {
+    transition: background-color 0.15s ease-in-out;
+}
+.ebt-tree-row:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.ebt-tree-file {
+    transition: background-color 0.15s ease-in-out;
+}
+.ebt-tree-file:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+.ebt-tree-children {
+    border-left: 1px dashed #dee2e6;
+    margin-left: 19px; /* Aligns with the folder icon */
+    padding-left: 8px;
+}
+.ebt-tree-file-icon {
+    margin-left: 16px; /* Aligns file icons perfectly with subfolders */
+}
+.ebt-collapsed > .ebt-tree-children {
+    display: none;
+}
+.ebt-tree-caret {
+    width: 14px;
+    display: inline-block;
+    text-align: center;
+}
+
+/* ── Stacked Modals (Image Viewer on top of Folder Viewer) ───────────────── */
+#modal-image-viewer {
+    z-index: 1085 !important;
+}
+/* Ensure the second modal backdrop sits between the two modals */
+.modal-backdrop + .modal-backdrop {
+    z-index: 1080 !important;
+}

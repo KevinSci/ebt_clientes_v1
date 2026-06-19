@@ -275,3 +275,46 @@ it('prevents client from deleting a post', function () {
     ]);
 });
 
+it('allows admin to create a post with attachments grouped in folders', function () {
+    $this->actingAs($this->admin);
+
+    $project = Project::factory()->create([
+        'company_id' => $this->company->id,
+    ]);
+
+    \Illuminate\Support\Facades\Storage::fake('public');
+
+    $file1 = \Illuminate\Http\UploadedFile::fake()->create('imagen.png', 100);
+    $file2 = \Illuminate\Http\UploadedFile::fake()->create('documento.pdf', 100);
+
+    $response = $this->post(route('admin.companies.projects.posts.store', [$this->company, $project]), [
+        'title'                   => 'Avance con Carpeta',
+        'description'             => 'Prueba de subida de carpeta.',
+        'attachments'             => [$file1, $file2],
+        'attachment_folder_names' => ['MisEvidencias', 'MisEvidencias'],
+        'attachment_folder_paths' => ['MisEvidencias', 'MisEvidencias/SubCarpeta'],
+    ]);
+
+    $response->assertRedirect(route('admin.companies.projects.show', [$this->company, $project]));
+    $response->assertSessionHas('success', 'Publicación creada correctamente.');
+
+    $this->assertDatabaseHas('posts', [
+        'project_id' => $project->id,
+        'title'      => 'Avance con Carpeta',
+    ]);
+
+    $post = Post::where('title', 'Avance con Carpeta')->first();
+    $this->assertCount(2, $post->attachments);
+
+    $this->assertDatabaseHas('attachments', [
+        'file_name'   => 'imagen.png',
+        'folder_name' => 'MisEvidencias',
+        'folder_path' => 'MisEvidencias',
+    ]);
+
+    $this->assertDatabaseHas('attachments', [
+        'file_name'   => 'documento.pdf',
+        'folder_name' => 'MisEvidencias',
+        'folder_path' => 'MisEvidencias/SubCarpeta',
+    ]);
+});
