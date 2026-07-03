@@ -1,17 +1,18 @@
-@extends('layouts.admin')
+@extends('layouts.client')
 
 @section('title', 'Configuración')
 
-@section('admin-content')
+@section('client-content')
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8 col-xl-6">
         <div class="mb-4">
             <h1 class="h4 mb-0"><i class="bi bi-gear-fill me-2 text-primary"></i>Configuración</h1>
-            <p class="text-muted small mb-0">Actualiza los datos de tu cuenta de administrador</p>
+            <p class="text-muted small mb-0">Actualiza los datos de tu cuenta</p>
         </div>
+        
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
-                <form method="POST" action="{{ route('admin.profile.update') }}" novalidate>
+                <form method="POST" action="{{ route('client.profile.update') }}" novalidate>
                     @csrf
                     @method('PUT')
 
@@ -34,6 +35,15 @@
                         :required="true"
                         :value="$user->email"
                         placeholder="correo@ejemplo.com"
+                    />
+
+                    <x-input
+                        name="phone"
+                        type="text"
+                        label="Teléfono"
+                        :required="false"
+                        :value="$user->phone"
+                        placeholder="Teléfono (opcional)"
                     />
 
                     <h5 class="card-title mt-5 mb-4 pb-2 border-bottom">

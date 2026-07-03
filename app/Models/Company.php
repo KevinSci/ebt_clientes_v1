@@ -40,4 +40,34 @@ class Company extends Model
     {
         return $this->hasMany(Project::class);
     }
+
+    /**
+     * Get the count of active projects.
+     */
+    public function activeProjectsCount(): int
+    {
+        return $this->projects()->active()->count();
+    }
+
+    /**
+     * Get the latest modification date across company, its projects and posts.
+     */
+    public function lastModifiedDate()
+    {
+        $dates = collect([$this->updated_at]);
+
+        $latestProject = $this->projects()->latest('updated_at')->first();
+        if ($latestProject) {
+            $dates->push($latestProject->updated_at);
+
+            $latestPost = \App\Models\Post::whereIn('project_id', $this->projects()->pluck('id'))
+                ->latest('updated_at')
+                ->first();
+            if ($latestPost) {
+                $dates->push($latestPost->updated_at);
+            }
+        }
+
+        return $dates->filter()->max();
+    }
 }

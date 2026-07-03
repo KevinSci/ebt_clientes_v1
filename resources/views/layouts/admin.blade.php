@@ -15,9 +15,6 @@
     </li>
 @endsection
 
-@section('footer')
-    {{-- Override global footer in admin layout --}}
-@endsection
 
 @section('content')
     <div class="d-flex flex-nowrap flex-grow-1">
@@ -54,18 +51,8 @@
             <div class="flex-grow-1 p-3 p-lg-4">
                 @yield('admin-content')
             </div>
-
-            <footer class="bg-dark text-light py-3 mt-auto">
-                <div class="container-fluid text-center">
-                    <p class="mb-1 fw-semibold">
-                        <span class="text-danger">EBT</span> Servicios Profesionales
-                    </p>
-                    <p class="small text-secondary mb-0">
-                        Portal de Clientes &copy; {{ date('Y') }} — Todos los derechos reservados
-                    </p>
-                </div>
-            </footer>
         </div>
-
+        
     </div>
-@endsection
+    @endsection
+    

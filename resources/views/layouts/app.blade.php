@@ -14,10 +14,12 @@
 
     @stack('head')
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light overflow-x-hidden">
+<body class="d-flex flex-column min-vh-100 bg-light overflow-x-hidden @auth is-authenticated @endauth">
+
+    <x-mobile-navbar />
 
     {{-- ── Navbar ──────────────────────────────────────────────────────── --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="ebt-navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top d-none d-lg-flex" id="ebt-navbar">
         <div class="container-fluid px-3">
 
             {{-- Brand --}}
@@ -51,21 +53,16 @@
                                     {{ auth()->user()->company_name ?? auth()->user()->email }}
                                 </span>
                             </li>
-                            @if(auth()->user()->isAdmin())
-                                <li>
+                            <li>
+                                @if(auth()->user()->isAdmin())
                                     <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
                                         <i class="bi bi-gear me-2"></i>Configuración
                                     </a>
-                                </li>
-                            @endif
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
-                                    </button>
-                                </form>
+                                @else
+                                    <a class="dropdown-item" href="{{ route('client.profile.edit') }}">
+                                        <i class="bi bi-gear me-2"></i>Configuración
+                                    </a>
+                                @endif
                             </li>
                         </ul>
                     </li>
@@ -113,7 +110,7 @@
 
     {{-- ── Footer ──────────────────────────────────────────────────────── --}}
     @section('footer')
-        <footer class="bg-dark text-light py-3 mt-auto">
+        <footer class="bg-dark text-light py-3 mt-auto @auth is-authenticated @endauth" id="ebt-footer">
             <div class="container text-center">
                 <p class="mb-1 fw-semibold">
                     <span class="text-danger">EBT</span> Servicios Profesionales
@@ -124,6 +121,8 @@
             </div>
         </footer>
     @show
+
+    <x-bottom-nav />
 
     @stack('scripts')
 

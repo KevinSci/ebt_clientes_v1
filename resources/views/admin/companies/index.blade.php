@@ -52,43 +52,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 g-md-4" id="companies-grid">
         @foreach ($companies as $company)
             <div class="col">
-                <div class="card h-100 shadow-sm border-0" id="company-card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <x-avatar size="md" variant="primary" icon="bi-building" class="me-3" />
-                            <div class="min-w-0 flex-grow-1">
-                                <h5 class="card-title mb-0 fw-bold text-truncate">
-                                    <a href="{{ route('admin.companies.show', $company) }}" class="text-decoration-none text-dark stretched-link">
-                                        {{ $company->name }}
-                                    </a>
-                                </h5>
-                                @if ($company->rfc)
-                                    <h6 class="card-subtitle mt-1 text-muted small text-truncate">
-                                        <i class="bi bi-card-text me-1"></i>RFC: {{ $company->rfc }}
-                                    </h6>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        @if ($company->address)
-                            <p class="card-text small text-muted mb-1 text-truncate">
-                                <i class="bi bi-geo-alt me-2"></i>{{ $company->address }}
-                            </p>
-                        @endif
-                        @if ($company->phone)
-                            <p class="card-text small text-muted mb-1">
-                                <i class="bi bi-telephone me-2"></i>{{ $company->phone }}
-                            </p>
-                        @endif
-                    </div>
-                    <div class="card-footer bg-transparent border-top-0 pt-0 d-flex justify-content-between align-items-center">
-                        <span class="badge text-bg-light border text-secondary">
-                            <i class="bi bi-folder2-open me-1"></i>
-                            {{ $company->projects_count }} {{ Str::plural('proyecto', $company->projects_count) }}
-                        </span>
-                        <i class="bi bi-arrow-right-circle text-primary fs-5" aria-hidden="true"></i>
-                    </div>
-                </div>
+                <x-company-card :company="$company" :url="route('admin.companies.show', $company)" />
             </div>
         @endforeach
     </div>

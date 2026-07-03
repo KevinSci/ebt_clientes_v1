@@ -1,0 +1,40 @@
+/* ── Admin Sidebar Layout (Mobile first fallback) ───────────────────────── */
+.ebt-sidebar {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    position: relative;
+    top: 0;
+}
+
+@media (min-width: 992px) {
+    .ebt-sidebar {
+        width: 240px;
+        min-width: 240px;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        bottom: 0;
+        height: calc(100vh - 56px);
+        overflow-y: auto;
+        z-index: 1020;
+    }
+
+    .ebt-admin-content-wrapper {
+        margin-left: 240px;
+    }
+}
+
+/* Fix sticky sidebar and navbar by using overflow-x: clip instead of hidden */
+body.overflow-x-hidden {
+    overflow-x: clip !important;
+}
+
+/* Sticky top only on extra-large screens (desktop side-by-side view) */
+@media (min-width: 1200px) {
+    .ebt-sticky-xl-top {
+        position: sticky;
+        top: 70px;
+        z-index: 100;
+    }
+}

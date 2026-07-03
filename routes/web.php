@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
+use App\Http\Controllers\Client\ProfileController as ClientProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StorageController;
@@ -95,6 +96,10 @@ Route::middleware(['auth', 'role:client'])
 
         // Dashboard (selection or redirect)
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Settings / Profile
+        Route::get('/profile', [ClientProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
 
         // Scoped company routes with check middleware
         Route::middleware('company.access')->group(function () {
