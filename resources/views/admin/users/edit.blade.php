@@ -50,6 +50,15 @@
                 {{-- ── Company Selection Section (Hidden for Admin, shown for Client) ── --}}
                 <div class="col-12" id="company-selector-section">
                     <hr class="my-3">
+                    
+                    <h5 class="fw-bold mb-2 small text-uppercase text-secondary">Configuración de Publicaciones</h5>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="can-publish-switch" name="can_publish" value="1" {{ old('can_publish', $user->canPublish()) ? 'checked' : '' }}>
+                        <label class="form-check-label fw-semibold text-dark cursor-pointer" for="can-publish-switch">
+                            Permitir al usuario subir publicaciones en los proyectos
+                        </label>
+                    </div>
+
                     <h5 class="fw-bold mb-2 small text-uppercase text-secondary">Asignación de Empresas</h5>
                     <p class="text-muted small mb-3">Elige las empresas a las que este usuario cliente tendrá acceso para ver sus proyectos.</p>
                     

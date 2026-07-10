@@ -71,10 +71,6 @@
 
                         </form>
 
-                        <p class="text-center text-muted mt-4 small mb-0">
-                            ¿Problemas para acceder? Contacta a tu ejecutivo EBT.
-                        </p>
-
                     </div>
                 </div>
                 {{-- /card --}}

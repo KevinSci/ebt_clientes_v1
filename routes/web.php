@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
 use App\Http\Controllers\Client\ProfileController as ClientProfileController;
+use App\Http\Controllers\Client\PostController as ClientPostController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StorageController;
@@ -107,6 +108,22 @@ Route::middleware(['auth', 'role:client'])
                 ->name('companies.projects.index');
             Route::get('/companies/{company}/projects/{project}', [ClientProjectController::class, 'show'])
                 ->name('companies.projects.show');
+
+            // Posts (create/update/delete a post for a project by client)
+            Route::post('/companies/{company}/projects/{project}/posts', [ClientPostController::class, 'store'])
+                ->name('companies.projects.posts.store');
+            Route::put('/companies/{company}/projects/{project}/posts/{post}', [ClientPostController::class, 'update'])
+                ->name('companies.projects.posts.update');
+            Route::delete('/companies/{company}/projects/{project}/posts/{post}', [ClientPostController::class, 'destroy'])
+                ->name('companies.projects.posts.destroy');
+
+            // Async folder upload endpoints for client posts
+            Route::post('/companies/{company}/projects/{project}/posts/ajax', [ClientPostController::class, 'storeAjax'])
+                ->name('companies.projects.posts.store-ajax');
+            Route::put('/companies/{company}/projects/{project}/posts/{post}/ajax', [ClientPostController::class, 'updateAjax'])
+                ->name('companies.projects.posts.update-ajax');
+            Route::post('/companies/{company}/projects/{project}/posts/{post}/attachments/upload', [ClientPostController::class, 'uploadAttachment'])
+                ->name('companies.projects.posts.attachments.upload');
         });
     });
 

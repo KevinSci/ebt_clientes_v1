@@ -21,6 +21,7 @@ class Post extends Model
      */
     protected $fillable = [
         'project_id',
+        'user_id',
         'title',
         'description',
         'published_at',
@@ -48,6 +49,14 @@ class Post extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * A post belongs to an author (user).
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**

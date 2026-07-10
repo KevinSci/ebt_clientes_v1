@@ -83,15 +83,17 @@
 @if ($company->projects->isEmpty())
     <x-alert type="info">Esta empresa no tiene proyectos aún.</x-alert>
 @else
-    <x-scrollable maxHeight="500px">
-        <div class="d-flex flex-column gap-3 p-1">
+    <x-scrollable maxHeight="650px">
+        <div class="row g-3 p-1">
             @foreach ($company->projects as $project)
-                <x-project-card 
-                    :project="$project" 
-                    :href="route('admin.companies.projects.show', [$company, $project])" 
-                    linkText="Ver proyecto" 
-                    :historical="$project->status !== 'active'" 
-                />
+                <div class="col-12 col-md-6 col-lg-4">
+                    <x-project-card 
+                        :project="$project" 
+                        :href="route('admin.companies.projects.show', [$company, $project])" 
+                        linkText="Ver proyecto" 
+                        :historical="$project->status !== 'active'" 
+                    />
+                </div>
             @endforeach
         </div>
     </x-scrollable>

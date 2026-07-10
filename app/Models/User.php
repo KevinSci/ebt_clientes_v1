@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,7 @@ class User extends Authenticatable
         'role',
         'company_name',
         'phone',
+        'settings',
     ];
 
     /**
@@ -49,6 +51,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
+            'settings'          => 'array',
         ];
     }
 
@@ -62,6 +65,14 @@ class User extends Authenticatable
     public function companies(): BelongsToMany
     {
         return $this->belongsToMany(Company::class);
+    }
+
+    /**
+     * A user has many posts.
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
     }
 
     // -------------------------------------------------------------------------
@@ -82,6 +93,17 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === 'client';
+    }
+
+    /**
+     * Determine if the user has permission to publish posts.
+     */
+    public function canPublish(): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+        return (bool) ($this->settings['can_publish'] ?? false);
     }
 
     protected function email(): Attribute

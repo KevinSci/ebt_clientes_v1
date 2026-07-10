@@ -61,7 +61,13 @@ class UserController extends Controller
             'role'        => ['required', 'string', Rule::in(['admin', 'client'])],
             'company_ids' => ['nullable', 'array'],
             'company_ids.*' => ['exists:companies,id'],
+            'can_publish' => ['nullable', 'boolean'],
         ]);
+
+        $settings = [];
+        if ($validated['role'] === 'client') {
+            $settings['can_publish'] = (bool) $request->input('can_publish');
+        }
 
         $user = User::create([
             'name'     => $validated['name'],
@@ -69,6 +75,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
             'phone'    => $validated['phone'] ?? null,
             'role'     => $validated['role'],
+            'settings' => $settings,
         ]);
 
         if ($user->role === 'client' && !empty($validated['company_ids'])) {
@@ -104,13 +111,22 @@ class UserController extends Controller
             'role'        => ['required', 'string', Rule::in(['admin', 'client'])],
             'company_ids' => ['nullable', 'array'],
             'company_ids.*' => ['exists:companies,id'],
+            'can_publish' => ['nullable', 'boolean'],
         ]);
 
+        $settings = $user->settings ?? [];
+        if ($validated['role'] === 'client') {
+            $settings['can_publish'] = (bool) $request->input('can_publish');
+        } else {
+            unset($settings['can_publish']);
+        }
+
         $updateData = [
-            'name'  => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'role'  => $validated['role'],
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'phone'    => $validated['phone'] ?? null,
+            'role'     => $validated['role'],
+            'settings' => $settings,
         ];
 
         if (!empty($validated['password'])) {
