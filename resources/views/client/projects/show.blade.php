@@ -238,6 +238,9 @@
 
 <x-image-viewer-modal title="Imagen" />
 <x-folder-viewer-modal title="Contenido de Carpeta" />
+@if(auth()->user()->canPublish())
+    <x-post-edit-modal-global />
+@endif
 
 {{-- Mobile Filters Offcanvas (bottom drawer) --}}
 <div class="offcanvas offcanvas-bottom d-md-none border-top rounded-top-4" 

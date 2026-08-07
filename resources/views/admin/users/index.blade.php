@@ -103,7 +103,9 @@
                                     @if (auth()->id() !== $user->id)
                                         <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#modal-delete-user-{{ $user->id }}">
+                                                data-bs-target="#modal-delete-user-global"
+                                                data-user-name="{{ $user->name }}"
+                                                data-delete-url="{{ route('admin.users.destroy', $user) }}">
                                             <i class="bi bi-trash"></i> Eliminar
                                         </button>
                                     @else
@@ -114,34 +116,53 @@
                                 </div>
                             </td>
                         </tr>
-
-                        {{-- Delete User Modal (Scoped to user loop) --}}
-                        @if (auth()->id() !== $user->id)
-                            <x-modal id="modal-delete-user-{{ $user->id }}" title="Eliminar Usuario" size="md">
-                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" id="form-delete-user-{{ $user->id }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <div class="text-center my-3">
-                                        <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
-                                        <h3 class="h5 mt-3 fw-bold">¿Estás seguro de que deseas eliminar este usuario?</h3>
-                                        <p class="text-muted small px-3">
-                                            Esta acción es irreversible y desvinculará a <strong>{{ $user->name }}</strong> de todas las empresas. Su cuenta de acceso será eliminada.
-                                        </p>
-                                    </div>
-                                </form>
-                                <x-slot:footer>
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <x-button type="submit" form="form-delete-user-{{ $user->id }}" variant="danger" icon="bi-trash">
-                                        Eliminar Usuario
-                                    </x-button>
-                                </x-slot:footer>
-                            </x-modal>
-                        @endif
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+
+    {{-- Delete User Modal (Single Global Instance) --}}
+    <x-modal id="modal-delete-user-global" title="Eliminar Usuario" size="md">
+        <form method="POST" action="" id="form-delete-user-global">
+            @csrf
+            @method('DELETE')
+            <div class="text-center my-3">
+                <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
+                <h3 class="h5 mt-3 fw-bold">¿Estás seguro de que deseas eliminar este usuario?</h3>
+                <p class="text-muted small px-3">
+                    Esta acción es irreversible y desvinculará a <strong id="delete-user-name-placeholder"></strong> de todas las empresas. Su cuenta de acceso será eliminada.
+                </p>
+            </div>
+        </form>
+        <x-slot:footer>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <x-button type="submit" form="form-delete-user-global" variant="danger" icon="bi-trash">
+                Eliminar Usuario
+            </x-button>
+        </x-slot:footer>
+    </x-modal>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteModal = document.getElementById('modal-delete-user-global');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    if (!button) return;
+                    const userName = button.getAttribute('data-user-name');
+                    const deleteUrl = button.getAttribute('data-delete-url');
+                    
+                    const nameEl = deleteModal.querySelector('#delete-user-name-placeholder');
+                    const formEl = deleteModal.querySelector('#form-delete-user-global');
+                    if (nameEl) nameEl.textContent = userName;
+                    if (formEl) formEl.action = deleteUrl;
+                });
+            }
+        });
+    </script>
+    @endpush
 
     {{-- Pagination --}}
     <x-pagination :items="$users" />

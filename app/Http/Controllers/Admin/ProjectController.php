@@ -59,7 +59,10 @@ class ProjectController extends Controller
         abort_if($project->company_id !== $company->id, 404);
 
         $project->load([
-            'posts' => fn ($q) => $q->with('attachments')->latest('published_at'),
+            'posts' => fn ($q) => $q->with([
+                'attachments:id,post_id,file_name,file_path,type,folder_name,folder_path',
+                'author:id,name,role',
+            ])->latest('published_at'),
         ]);
 
         return view('admin.projects.show', compact('company', 'project'));

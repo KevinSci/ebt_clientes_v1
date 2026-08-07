@@ -49,7 +49,7 @@ export function initModalReopen() {
 
         if (postPrefix && formId.startsWith(postPrefix)) {
             const postId  = formId.replace(postPrefix, '');
-            const modalEl = document.getElementById(postModalPrefix + postId);
+            const modalEl = document.getElementById('modal-edit-post-global') || document.getElementById(postModalPrefix + postId);
             if (modalEl) {
                 const modal = new bootstrap.Modal(modalEl);
                 modal.show();

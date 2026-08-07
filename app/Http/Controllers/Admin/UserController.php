@@ -28,7 +28,7 @@ class UserController extends Controller
                       ->orWhere('phone', 'like', "%{$search}%");
                 });
             })
-            ->with('companies')
+            ->with('companies:id,name')
             ->latest()
             ->paginate(12)
             ->withQueryString();

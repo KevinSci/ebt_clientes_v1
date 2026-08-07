@@ -22,9 +22,9 @@
     ];
     $gradient = $gradients[$company->id % count($gradients)];
     
-    $activeProjects = $company->activeProjectsCount();
-    $totalProjects = $company->projects()->count();
-    $lastModified = $company->lastModifiedDate();
+    $activeProjects = $company->active_projects_count;
+    $totalProjects  = $company->projects_count ?? ($company->relationLoaded('projects') ? $company->projects->count() : $company->projects()->count());
+    $lastModified   = $company->last_modified_date;
 @endphp
 
 <div class="card h-100 border-0 shadow-sm rounded-2 p-3 text-center hover-shadow transition-all duration-200 position-relative">

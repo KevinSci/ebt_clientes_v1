@@ -2,6 +2,8 @@
     'post',
     'canEdit' => false,
     'editModalTarget' => null,
+    'editUpdateUrl' => null,
+    'editDeleteUrl' => null,
 ])
 
 @php
@@ -17,6 +19,16 @@
     }
     $cardClasses = 'card mb-3' . ($isSelf ? ' bg-info bg-opacity-10 border-info-subtle' : '');
     $target = $editModalTarget ?? '#modal-edit-post-' . $post->id;
+
+    $attachmentsJson = $post->relationLoaded('attachments') ? $post->attachments->map(fn($a) => [
+        'id'          => $a->id,
+        'file_name'   => $a->file_name,
+        'file_path'   => $a->file_path,
+        'url'         => $a->url,
+        'type'        => $a->type,
+        'folder_name' => $a->folder_name,
+        'icon'        => $a->icon,
+    ])->values()->toJson() : '[]';
 @endphp
 
 <div class="{{ $cardClasses }}" data-post-id="{{ $post->id }}">
@@ -42,7 +54,14 @@
                 <div class="flex-shrink-0 ms-2">
                     <button type="button" class="btn btn-outline-secondary btn-sm py-1 px-2 d-flex align-items-center gap-1"
                             data-bs-toggle="modal"
-                            data-bs-target="{{ $target }}">
+                            data-bs-target="{{ $target }}"
+                            data-post-id="{{ $post->id }}"
+                            data-post-title="{{ $post->title }}"
+                            data-post-description="{{ $post->description }}"
+                            data-post-published-at="{{ $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : '' }}"
+                            data-update-url="{{ $editUpdateUrl }}"
+                            data-delete-url="{{ $editDeleteUrl }}"
+                            data-attachments='{{ $attachmentsJson }}'>
                         <i class="bi bi-pencil"></i>
                         <span class="d-none d-sm-inline">Editar</span>
                     </button>

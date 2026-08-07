@@ -89,6 +89,7 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <x-project-card 
                         :project="$project" 
+                        :company="$company"
                         :href="route('admin.companies.projects.show', [$company, $project])" 
                         linkText="Ver proyecto" 
                         :historical="$project->status !== 'active'" 

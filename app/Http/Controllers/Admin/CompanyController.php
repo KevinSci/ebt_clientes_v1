@@ -28,7 +28,11 @@ class CompanyController extends Controller
                       ->orWhere('phone', 'like', "%{$search}%");
                 });
             })
-            ->withCount('projects')
+            ->withCount([
+                'projects',
+                'projects as active_projects_count' => fn ($q) => $q->active(),
+            ])
+            ->with(['projects' => fn ($q) => $q->select('id', 'company_id', 'status', 'updated_at')->with(['posts' => fn ($pq) => $pq->select('id', 'project_id', 'updated_at')->latest('updated_at')->limit(1)])])
             ->latest()
             ->paginate(12)
             ->withQueryString();
@@ -44,7 +48,11 @@ class CompanyController extends Controller
      */
     public function show(Company $company): View
     {
-        $company->load(['projects' => fn ($q) => $q->latest()]);
+        $company->load([
+            'projects' => fn ($q) => $q->withCount('posts')->latest(),
+            'users:id,name,role',
+        ]);
+        $company->projects->each(fn ($p) => $p->setRelation('company', $company));
 
         return view('admin.companies.show', compact('company'));
     }

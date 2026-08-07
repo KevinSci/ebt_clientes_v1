@@ -1,5 +1,6 @@
 @props([
     'project',
+    'company' => null,
     'href',
     'linkText' => null,
     'historical' => false,
@@ -54,8 +55,10 @@
             {{-- Separator & Footer (Avatars stack / Detail link) --}}
             <div class="d-flex align-items-center justify-content-between mt-3 pt-3 border-top border-light-subtle">
                 @php
-                    $users = $project->company->users()->take(3)->get();
-                    $remainingUsers = max(0, $project->company->users()->count() - 3);
+                    $comp = $company ?? ($project->relationLoaded('company') ? $project->company : null);
+                    $companyUsers = ($comp && $comp->relationLoaded('users')) ? $comp->users : collect();
+                    $users = $companyUsers->take(3);
+                    $remainingUsers = max(0, $companyUsers->count() - 3);
                 @endphp
                 @if ($project->status === 'active' && $users->isNotEmpty())
                     <div class="ebt-avatar-stack">

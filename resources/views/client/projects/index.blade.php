@@ -28,6 +28,7 @@
                 <div class="col-12 col-md-6">
                     <x-project-card 
                         :project="$project" 
+                        :company="$company"
                         :href="route('client.companies.projects.show', [$company, $project])" 
                         linkText="Ver feed" 
                     />
@@ -51,6 +52,7 @@
             <div class="col-12 col-md-6">
                 <x-project-card 
                     :project="$project" 
+                    :company="$company"
                     :href="route('client.companies.projects.show', [$company, $project])" 
                     :historical="true" 
                 />

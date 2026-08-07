@@ -68,13 +68,12 @@
             <x-scrollable maxHeight="650px">
                 <div class="d-flex flex-column gap-3">
                     @foreach ($project->posts as $post)
-                        <x-post-card :post="$post" :canEdit="true" />
-
-                        {{-- Modal: Edit Post --}}
-                        <x-post-edit-modal 
+                        <x-post-card 
                             :post="$post" 
-                            :updateUrl="route('admin.companies.projects.posts.update', [$company, $project, $post])" 
-                            :deleteUrl="route('admin.companies.projects.posts.destroy', [$company, $project, $post])" 
+                            :canEdit="true"
+                            editModalTarget="#modal-edit-post-global"
+                            :editUpdateUrl="route('admin.companies.projects.posts.update', [$company, $project, $post])"
+                            :editDeleteUrl="route('admin.companies.projects.posts.destroy', [$company, $project, $post])"
                         />
                     @endforeach
                 </div>
@@ -86,6 +85,7 @@
 
 <x-image-viewer-modal title="Vista de imagen" />
 <x-folder-viewer-modal title="Contenido de Carpeta" />
+<x-post-edit-modal-global />
 
 {{-- Modal: Edit Project --}}
 <x-modal id="modal-edit-project" title="Editar Proyecto" size="md">

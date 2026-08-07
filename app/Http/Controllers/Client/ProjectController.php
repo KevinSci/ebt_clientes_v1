@@ -18,15 +18,21 @@ class ProjectController extends Controller
      */
     public function index(Company $company): View
     {
+        $company->load('users:id,name,role');
+
         $activeProjects = $company->projects()
             ->active()
+            ->withCount('posts')
             ->latest()
             ->get();
+        $activeProjects->each(fn ($p) => $p->setRelation('company', $company));
 
         $historicalProjects = $company->projects()
             ->whereIn('status', ['completed', 'paused'])
+            ->withCount('posts')
             ->latest()
             ->get();
+        $historicalProjects->each(fn ($p) => $p->setRelation('company', $company));
 
         return view('client.projects.index', compact('company', 'activeProjects', 'historicalProjects'));
     }
@@ -48,7 +54,10 @@ class ProjectController extends Controller
         $authorId = $request->input('author_id');
 
         $postsQuery = $project->posts()
-            ->with(['attachments', 'author'])
+            ->with([
+                'attachments:id,post_id,file_name,file_path,type,folder_name,folder_path',
+                'author:id,name,role',
+            ])
             ->when($search->isNotEmpty(), fn ($q) => $q->where('title', 'like', "%{$search}%"))
             ->when($dateFrom, fn ($q) => $q->whereDate('published_at', '>=', $dateFrom))
             ->when($dateTo,   fn ($q) => $q->whereDate('published_at', '<=', $dateTo))
@@ -73,8 +82,14 @@ class ProjectController extends Controller
         }
 
         // Get unique client authors who have published in this project
-        $authorIds = $project->posts()->whereNotNull('user_id')->pluck('user_id')->unique();
-        $authors = \App\Models\User::whereIn('id', $authorIds)->where('role', 'client')->get();
+        $authorIds = $posts instanceof \Illuminate\Pagination\LengthAwarePaginator
+            ? $project->posts()->whereNotNull('user_id')->pluck('user_id')->unique()
+            : $posts->pluck('user_id')->filter()->unique();
+
+        $authors = \App\Models\User::whereIn('id', $authorIds)
+            ->where('role', 'client')
+            ->select('id', 'name')
+            ->get();
 
         return view('client.projects.show', compact('company', 'project', 'posts', 'search', 'dateFrom', 'dateTo', 'authorId', 'authors'));
     }

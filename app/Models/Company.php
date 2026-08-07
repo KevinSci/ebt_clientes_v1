@@ -42,32 +42,65 @@ class Company extends Model
     }
 
     /**
-     * Get the count of active projects.
+     * Get active projects count attribute.
      */
-    public function activeProjectsCount(): int
+    public function getActiveProjectsCountAttribute(): int
     {
+        if (isset($this->attributes['active_projects_count'])) {
+            return (int) $this->attributes['active_projects_count'];
+        }
+
+        if ($this->relationLoaded('projects')) {
+            return $this->projects->where('status', 'active')->count();
+        }
+
         return $this->projects()->active()->count();
     }
 
     /**
-     * Get the latest modification date across company, its projects and posts.
+     * Get the count of active projects (helper / backward compatibility).
      */
-    public function lastModifiedDate()
+    public function activeProjectsCount(): int
+    {
+        return $this->active_projects_count;
+    }
+
+    /**
+     * Get the latest modification date attribute.
+     */
+    public function getLastModifiedDateAttribute()
     {
         $dates = collect([$this->updated_at]);
 
-        $latestProject = $this->projects()->latest('updated_at')->first();
-        if ($latestProject) {
-            $dates->push($latestProject->updated_at);
+        if ($this->relationLoaded('projects')) {
+            $dates = $dates->merge($this->projects->pluck('updated_at'));
+            $this->projects->each(function ($project) use (&$dates) {
+                if ($project->relationLoaded('posts')) {
+                    $dates = $dates->merge($project->posts->pluck('updated_at'));
+                }
+            });
+        } else {
+            $latestProject = $this->projects()->latest('updated_at')->first();
+            if ($latestProject) {
+                $dates->push($latestProject->updated_at);
 
-            $latestPost = \App\Models\Post::whereIn('project_id', $this->projects()->pluck('id'))
-                ->latest('updated_at')
-                ->first();
-            if ($latestPost) {
-                $dates->push($latestPost->updated_at);
+                $latestPost = \App\Models\Post::whereIn('project_id', $this->projects()->pluck('id'))
+                    ->latest('updated_at')
+                    ->first();
+                if ($latestPost) {
+                    $dates->push($latestPost->updated_at);
+                }
             }
         }
 
         return $dates->filter()->max();
+    }
+
+    /**
+     * Get the latest modification date (helper / backward compatibility).
+     */
+    public function lastModifiedDate()
+    {
+        return $this->last_modified_date;
     }
 }
