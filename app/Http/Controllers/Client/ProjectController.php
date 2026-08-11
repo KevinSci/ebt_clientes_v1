@@ -72,7 +72,8 @@ class ProjectController extends Controller
                 }
             })
             ->whereNotNull('published_at')
-            ->orderBy('published_at', 'desc');
+            ->orderBy('published_at', 'desc')
+            ->orderBy('id', 'desc');
 
         $canPublish = auth()->user()->canPublish();
         if ($canPublish) {

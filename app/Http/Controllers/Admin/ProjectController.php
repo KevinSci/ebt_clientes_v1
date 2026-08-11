@@ -62,7 +62,7 @@ class ProjectController extends Controller
             'posts' => fn ($q) => $q->with([
                 'attachments:id,post_id,file_name,file_path,type,folder_name,folder_path',
                 'author:id,name,role',
-            ])->latest('published_at'),
+            ])->latest('published_at')->latest('id'),
         ]);
 
         return view('admin.projects.show', compact('company', 'project'));
