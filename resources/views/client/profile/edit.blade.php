@@ -47,6 +47,17 @@
                     />
 
                     <h5 class="card-title mt-5 mb-4 pb-2 border-bottom">
+                        <i class="bi bi-bell-fill text-primary me-2"></i>Notificaciones
+                    </h5>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="notifications-email-switch" name="notifications_email" value="1" {{ old('notifications_email', $user->emailNotificationsEnabled()) ? 'checked' : '' }}>
+                        <label class="form-check-label fw-semibold text-dark cursor-pointer" for="notifications-email-switch">
+                            Recibir notificaciones por correo electrónico
+                        </label>
+                    </div>
+                    <p class="text-muted small mb-3">Si activas esta opción, recibirás avisos por correo electrónico cuando se publiquen nuevas actualizaciones o evidencias en tus proyectos.</p>
+
+                    <h5 class="card-title mt-5 mb-4 pb-2 border-bottom">
                         <i class="bi bi-shield-lock-fill text-danger me-2"></i>Cambiar Contraseña
                     </h5>
                     <p class="text-muted small mb-3">Deja estos campos en blanco si no deseas cambiar tu contraseña.</p>

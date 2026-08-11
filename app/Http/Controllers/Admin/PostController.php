@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Concerns\StoresPostAttachments;
 use App\Models\Attachment;
+use App\Models\Company;
 use App\Models\Post;
 use App\Models\Project;
-use App\Models\Company;
-use App\Http\Concerns\StoresPostAttachments;
+use App\Notifications\NewPostPublishedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -55,6 +57,8 @@ class PostController extends Controller
                 $request->input('attachment_folder_paths', [])
             );
         }
+
+        $this->sendNewPostNotifications($post, $company);
 
         return redirect()
             ->route('admin.companies.projects.show', [$company, $project])
@@ -163,6 +167,8 @@ class PostController extends Controller
             $this->storeAttachments($post, $request->file('attachments'));
         }
 
+        $this->sendNewPostNotifications($post, $company);
+
         return response()->json([
             'post_id'      => $post->id,
             'redirect_url' => route('admin.companies.projects.show', [$company, $project]),
@@ -239,5 +245,23 @@ class PostController extends Controller
             'post_id'      => $post->id,
             'redirect_url' => route('admin.companies.projects.show', [$company, $project]),
         ], 200);
+    }
+
+    /**
+     * Send email notifications to all clients of the company who have alerts enabled.
+     */
+    private function sendNewPostNotifications(Post $post, Company $company): void
+    {
+        $notifiableClients = $company->users()
+            ->where('role', 'client')
+            ->get()
+            ->filter(fn($user) => $user->emailNotificationsEnabled());
+
+        if ($notifiableClients->isNotEmpty()) {
+            Notification::send(
+                $notifiableClients,
+                new NewPostPublishedNotification($post)
+            );
+        }
     }
 }

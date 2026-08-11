@@ -106,6 +106,15 @@ class User extends Authenticatable
         return (bool) ($this->settings['can_publish'] ?? false);
     }
 
+    /**
+     * Check if email notifications are enabled for the user.
+     * Defaults to false so emails are opt-in by the client.
+     */
+    public function emailNotificationsEnabled(): bool
+    {
+        return (bool) data_get($this->settings, 'notifications.email', false);
+    }
+
     protected function email(): Attribute
     {
         return Attribute::make(

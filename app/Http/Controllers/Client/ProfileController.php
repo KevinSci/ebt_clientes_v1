@@ -33,6 +33,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['nullable', 'string', Password::defaults(), 'confirmed'],
+            'notifications_email' => ['nullable', 'boolean'],
         ]);
 
         $user->name = $validated['name'];
@@ -42,6 +43,10 @@ class ProfileController extends Controller
         if (!empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
+
+        $settings = $user->settings ?? [];
+        $settings['notifications']['email'] = $request->boolean('notifications_email');
+        $user->settings = $settings;
 
         $user->save();
 
