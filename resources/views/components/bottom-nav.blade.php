@@ -41,7 +41,7 @@
                 @endif
                 </a>
 
-            @if(auth()->user()->companies()->count() > 1)
+            @if(auth()->user()->hasMultipleCompanies())
                 <a href="{{ route('client.dashboard') }}" 
                    class="nav-link text-center flex-fill {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
                     <i class="bi bi-arrow-left-right fs-5"></i>

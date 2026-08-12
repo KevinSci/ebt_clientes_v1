@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\ProjectTask;
+use App\Observers\ProjectTaskObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 
@@ -23,5 +25,7 @@ class AppServiceProvider extends ServiceProvider
         if (str_contains(request()->getHost(), 'sharedwithexpose.com')) {
             URL::forceScheme('https');
         }
+
+        ProjectTask::observe(ProjectTaskObserver::class);
     }
 }

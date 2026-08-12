@@ -19,14 +19,19 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name'                => ['required', 'string', 'max:255'],
             'status'              => ['required', 'string', 'in:active,paused,completed'],
-            'progress_percentage' => ['required', 'integer', 'min:0', 'max:100'],
+            'progress_mode'       => ['required', 'string', 'in:manual,phases'],
+            'progress_percentage' => ['nullable', 'integer', 'min:0', 'max:100'],
             'created_at'          => ['nullable', 'date'],
         ]);
+
+        $progressMode = $validated['progress_mode'];
+        $progressPercentage = ($progressMode === 'phases') ? 0 : ($validated['progress_percentage'] ?? 0);
 
         $company->projects()->create([
             'name'                => $validated['name'],
             'status'              => $validated['status'],
-            'progress_percentage' => $validated['progress_percentage'],
+            'progress_mode'       => $progressMode,
+            'progress_percentage' => $progressPercentage,
             'created_at'          => $validated['created_at'] ?? now(),
         ]);
 
@@ -50,7 +55,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Display a specific project with its posts and attachments.
+     * Display a specific project with its posts, attachments, phases and tasks.
      *
      * The company ownership is verified to ensure data isolation.
      */
@@ -59,9 +64,16 @@ class ProjectController extends Controller
         abort_if($project->company_id !== $company->id, 404);
 
         $project->load([
+            'phases' => fn ($q) => $q->orderBy('sort_order')
+                ->withCount([
+                    'tasks',
+                    'tasks as completed_tasks_count' => fn ($t) => $t->where('is_completed', true),
+                ]),
+            'phases.tasks' => fn ($q) => $q->orderBy('sort_order'),
             'posts' => fn ($q) => $q->with([
                 'attachments:id,post_id,file_name,file_path,type,folder_name,folder_path',
                 'author:id,name,role',
+                'task:id,phase_id,name',
             ])->latest('published_at')->latest('id'),
         ]);
 
@@ -78,16 +90,27 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name'                => ['required', 'string', 'max:255'],
             'status'              => ['required', 'string', 'in:active,paused,completed'],
-            'progress_percentage' => ['required', 'integer', 'min:0', 'max:100'],
+            'progress_percentage' => ['nullable', 'integer', 'min:0', 'max:100'],
             'created_at'          => ['nullable', 'date'],
         ]);
 
-        $project->update([
-            'name'                => $validated['name'],
-            'status'              => $validated['status'],
-            'progress_percentage' => $validated['progress_percentage'],
-            'created_at'          => $validated['created_at'] ?? $project->created_at,
-        ]);
+        $updateData = [
+            'name'       => $validated['name'],
+            'status'     => $validated['status'],
+            'created_at' => $validated['created_at'] ?? $project->created_at,
+        ];
+
+        // Progress mode is immutable! If project is manual, update progress_percentage manually.
+        if ($project->isManualProgress()) {
+            $updateData['progress_percentage'] = $validated['progress_percentage'] ?? 0;
+        }
+
+        $project->update($updateData);
+
+        // If phases mode, recalculate progress automatically in case status changed
+        if ($project->isPhasesProgress()) {
+            $project->recalculateProgress();
+        }
 
         return redirect()
             ->route('admin.companies.projects.show', [$company, $project])

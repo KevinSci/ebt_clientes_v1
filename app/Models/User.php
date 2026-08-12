@@ -115,6 +115,27 @@ class User extends Authenticatable
         return (bool) data_get($this->settings, 'notifications.email', false);
     }
 
+    /**
+     * Cache companies count per request to prevent redundant count queries in views.
+     */
+    protected ?int $memoizedCompaniesCount = null;
+
+    /**
+     * Check if the user belongs to multiple companies (memoized).
+     */
+    public function hasMultipleCompanies(): bool
+    {
+        if ($this->memoizedCompaniesCount === null) {
+            if ($this->relationLoaded('companies')) {
+                $this->memoizedCompaniesCount = $this->companies->count();
+            } else {
+                $this->memoizedCompaniesCount = $this->companies()->count();
+            }
+        }
+
+        return $this->memoizedCompaniesCount > 1;
+    }
+
     protected function email(): Attribute
     {
         return Attribute::make(

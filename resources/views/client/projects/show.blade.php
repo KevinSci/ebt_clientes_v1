@@ -11,21 +11,100 @@
     ['label' => $project->name],
 ]" class="mt-3" />
 
-{{-- ── Project summary card ─────────────────────────────────────────────── --}}
-{{-- <div class="card mb-4">
-    <div class="card-body">
-        <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-2">
-            <div>
-                <h1 class="h5 fw-bold mb-1">{{ $project->name }}</h1>
-                <x-badge :status="$project->status" />
+{{-- ── Phases & Tasks Read-Only View (If project is in phases mode) ────────── --}}
+@if ($project->isPhasesProgress())
+    <div class="card mb-4">
+        <div class="card-header bg-light d-flex align-items-center justify-content-between py-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-diagram-3-fill text-primary fs-5"></i>
+                <h2 class="h6 mb-0 fw-bold">Avance de Fases y Tareas</h2>
             </div>
-            <a href="{{ route('client.companies.projects.index', $company) }}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Volver
-            </a>
+            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill">
+                {{ $project->progress_percentage }}% Completado
+            </span>
         </div>
-        <x-progress-bar :percentage="$project->progress_percentage" :status="$project->status" class="mt-3" />
+        <div class="card-body">
+            @if ($project->phases->isEmpty())
+                <p class="text-muted small mb-0">No se han definido fases en este proyecto aún.</p>
+            @else
+                <div class="accordion" id="clientPhasesAccordion">
+                    @foreach ($project->phases as $phase)
+                        @php
+                            $phasePercentage = $phase->tasks_count > 0 
+                                ? (int) round(($phase->completed_tasks_count / $phase->tasks_count) * 100) 
+                                : 0;
+                            $phaseBadgeClass = match($phase->status) {
+                                'completed' => 'bg-success-subtle text-success-emphasis border-success-subtle',
+                                'in_progress' => 'bg-primary-subtle text-primary-emphasis border-primary-subtle',
+                                default => 'bg-secondary-subtle text-secondary-emphasis border-secondary-subtle',
+                            };
+                            $phaseStatusLabel = match($phase->status) {
+                                'completed' => 'Completada',
+                                'in_progress' => 'En Progreso',
+                                default => 'Pendiente',
+                            };
+                        @endphp
+                        <div class="accordion-item border rounded mb-2 overflow-hidden">
+                            <div class="accordion-header" id="client-heading-phase-{{ $phase->id }}">
+                                <div class="accordion-button bg-light py-2 px-3 {{ $loop->first ? '' : 'collapsed' }}"
+                                     type="button" data-bs-toggle="collapse"
+                                     data-bs-target="#client-collapse-phase-{{ $phase->id }}"
+                                     aria-expanded="{{ $loop->first ? 'true' : 'false' }}"
+                                     aria-controls="client-collapse-phase-{{ $phase->id }}">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between w-100 me-3 gap-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fw-bold text-dark small mb-0">{{ $phase->name }}</span>
+                                            <span class="badge border {{ $phaseBadgeClass }} rounded-pill small">
+                                                {{ $phaseStatusLabel }}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="small text-muted">
+                                                {{ $phase->completed_tasks_count }}/{{ $phase->tasks_count }} tareas
+                                            </span>
+                                            <div class="progress me-2" style="width: 70px; height: 5px;">
+                                                <div class="progress-bar bg-{{ $phase->status === 'completed' ? 'success' : 'primary' }}" 
+                                                     style="width: {{ $phasePercentage }}%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="client-collapse-phase-{{ $phase->id }}"
+                                 class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}"
+                                 aria-labelledby="client-heading-phase-{{ $phase->id }}"
+                                 data-bs-parent="#clientPhasesAccordion">
+                                <div class="accordion-body p-3">
+                                    @if ($phase->tasks->isEmpty())
+                                        <p class="text-muted small italic mb-0">No hay tareas en esta fase.</p>
+                                    @else
+                                        <div class="list-group list-group-flush">
+                                            @foreach ($phase->tasks as $task)
+                                                <div class="list-group-item d-flex align-items-center justify-content-between py-2 px-1 border-0">
+                                                    <div class="d-flex align-items-center gap-2 min-w-0">
+                                                        <i class="bi {{ $task->is_completed ? 'bi-check-circle-fill text-success' : 'bi-circle text-secondary' }} fs-6"></i>
+                                                        <span class="small text-break {{ $task->is_completed ? 'text-decoration-line-through text-muted' : 'fw-medium text-dark' }}">
+                                                            {{ $task->name }}
+                                                        </span>
+                                                    </div>
+                                                    @if ($task->is_completed && $task->completed_at)
+                                                        <span class="badge bg-success-subtle text-success small border border-success-subtle ms-2">
+                                                            <i class="bi bi-check-lg me-1"></i>{{ $task->completed_at->format('d/m/Y') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
     </div>
-</div> --}}
+@endif
 
 {{-- ── Filters (GET-based) ──────────────────────────────────────────────── --}}
 @php
@@ -186,7 +265,7 @@
     <div class="row g-4">
         {{-- Left: Post form --}}
         <div class="col-12 col-xl-5">
-            <x-post-form :action="route('client.companies.projects.posts.store', [$company, $project])" />
+            <x-post-form :action="route('client.companies.projects.posts.store', [$company, $project])" :project="$project" />
         </div>
 
         {{-- Right: Posts list with scrollable container --}}

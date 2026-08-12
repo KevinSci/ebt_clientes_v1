@@ -48,6 +48,11 @@
                             {{ $post->published_at->format('d/m/Y H:i') }}
                         </time>
                     @endif
+                    @if ($post->task)
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                            <i class="bi bi-check2-square me-1"></i>{{ $post->task->name }}
+                        </span>
+                    @endif
                 </div>
             </div>
             @if ($canEdit)

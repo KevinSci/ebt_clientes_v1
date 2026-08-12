@@ -2,6 +2,7 @@
     'action',
     'formId' => 'form-new-post',
     'submitLabel' => 'Publicar',
+    'project' => null,
 ])
 
 <div class="card ebt-sticky-xl-top">
@@ -33,6 +34,29 @@
                 :required="true"
                 placeholder="Ej. Avance semana 3 — Inspección submarina"
             />
+
+            @if ($project && $project->isPhasesProgress() && $project->phases->isNotEmpty())
+                <div class="mb-3">
+                    <label for="project_task_id" class="form-label fw-medium">Asociar a Tarea (Opcional)</label>
+                    <select name="project_task_id" id="project_task_id" class="form-select @error('project_task_id') is-invalid @enderror">
+                        <option value="">-- Proyecto General (Sin tarea) --</option>
+                        @foreach($project->phases as $phase)
+                            @if($phase->tasks->isNotEmpty())
+                                <optgroup label="Fase: {{ $phase->name }}">
+                                    @foreach($phase->tasks as $task)
+                                        <option value="{{ $task->id }}" {{ old('project_task_id') == $task->id ? 'selected' : '' }}>
+                                            {{ $task->name }} {{ $task->is_completed ? '✓' : '' }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            @endif
+                        @endforeach
+                    </select>
+                    @error('project_task_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            @endif
 
             <x-textarea
                 name="description"

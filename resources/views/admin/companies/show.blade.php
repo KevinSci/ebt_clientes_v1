@@ -113,7 +113,20 @@
                 <x-status-select name="status" value="active" />
             </div>
             <div class="col-12 col-md-6">
-                <x-input name="progress_percentage" type="number" label="Porcentaje de avance" :required="true"
+                <div class="mb-3">
+                    <label for="create_progress_mode" class="form-label fw-semibold">Modo de progreso <span class="text-danger">*</span></label>
+                    <select name="progress_mode" id="create_progress_mode" class="form-select @error('progress_mode') is-invalid @enderror" required>
+                        <option value="manual" {{ old('progress_mode', 'manual') === 'manual' ? 'selected' : '' }}>Manual (Porcentaje)</option>
+                        <option value="phases" {{ old('progress_mode') === 'phases' ? 'selected' : '' }}>Basado en Fases y Tareas</option>
+                    </select>
+                    <div class="form-text small text-muted">Esta decisión no se podrá modificar posteriormente.</div>
+                    @error('progress_mode')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-12 col-md-6" id="wrapper-progress-percentage">
+                <x-input name="progress_percentage" id="input_create_progress_percentage" type="number" label="Porcentaje de avance" :required="true"
                          placeholder="0 - 100" min="0" max="100" value="0" />
             </div>
             <div class="col-12">
@@ -220,5 +233,28 @@
     <div data-reopen-form-id="{{ old('form_id') }}"
          data-modal-map='{"edit_company":"modal-edit-company","create_project":"modal-create-project"}'></div>
 @endif
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modeSelect = document.getElementById('create_progress_mode');
+        const progressWrapper = document.getElementById('wrapper-progress-percentage');
+        
+        function updateProgressVisibility() {
+            if (!modeSelect || !progressWrapper) return;
+            if (modeSelect.value === 'phases') {
+                progressWrapper.classList.add('d-none');
+            } else {
+                progressWrapper.classList.remove('d-none');
+            }
+        }
+
+        if (modeSelect) {
+            modeSelect.addEventListener('change', updateProgressVisibility);
+            updateProgressVisibility();
+        }
+    });
+</script>
+@endpush
 
 @endsection

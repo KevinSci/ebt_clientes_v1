@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\PhaseController;
+use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
@@ -65,6 +67,22 @@ Route::middleware(['auth', 'role:admin'])
             ->name('companies.projects.update');
         Route::delete('/companies/{company}/projects/{project}', [AdminProjectController::class, 'destroy'])
             ->name('companies.projects.destroy');
+
+        // Project Phases
+        Route::post('/companies/{company}/projects/{project}/phases', [PhaseController::class, 'store'])
+            ->name('companies.projects.phases.store');
+        Route::put('/companies/{company}/projects/{project}/phases/{phase}', [PhaseController::class, 'update'])
+            ->name('companies.projects.phases.update');
+        Route::delete('/companies/{company}/projects/{project}/phases/{phase}', [PhaseController::class, 'destroy'])
+            ->name('companies.projects.phases.destroy');
+
+        // Project Tasks
+        Route::post('/companies/{company}/projects/{project}/phases/{phase}/tasks', [TaskController::class, 'store'])
+            ->name('companies.projects.phases.tasks.store');
+        Route::patch('/companies/{company}/projects/{project}/phases/{phase}/tasks/{task}/toggle', [TaskController::class, 'toggleComplete'])
+            ->name('companies.projects.phases.tasks.toggle');
+        Route::delete('/companies/{company}/projects/{project}/phases/{phase}/tasks/{task}', [TaskController::class, 'destroy'])
+            ->name('companies.projects.phases.tasks.destroy');
 
         // Posts (create/update a post for a project)
         Route::post('/companies/{company}/projects/{project}/posts', [PostController::class, 'store'])

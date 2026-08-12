@@ -12,7 +12,7 @@
             </a>
         </li>
     @endif
-    @if (auth()->check() && auth()->user()->companies()->count() > 1)
+    @if (auth()->check() && auth()->user()->hasMultipleCompanies())
         <li class="nav-item d-lg-none">
             <a class="nav-link {{ request()->routeIs('client.dashboard') ? 'active' : '' }}" 
                href="{{ route('client.dashboard') }}">

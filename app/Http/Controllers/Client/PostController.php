@@ -24,6 +24,7 @@ class PostController extends Controller
         $validated = $request->validate([
             'title'                     => ['required', 'string', 'max:255'],
             'description'               => ['required', 'string', 'max:20000'],
+            'project_task_id'           => ['nullable', 'exists:project_tasks,id'],
             'published_at'              => ['nullable', 'date'],
             'attachments'               => ['nullable', 'array', 'max:100'],
             'attachments.*'             => ['file', 'max:20480', 'extensions:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,zip,rar'],
@@ -34,10 +35,11 @@ class PostController extends Controller
         ]);
 
         $post = $project->posts()->create([
-            'user_id'      => auth()->id(),
-            'title'        => $validated['title'],
-            'description'  => $validated['description'],
-            'published_at' => $validated['published_at'] ?? now(),
+            'user_id'         => auth()->id(),
+            'title'           => $validated['title'],
+            'description'     => $validated['description'],
+            'project_task_id' => $validated['project_task_id'] ?? null,
+            'published_at'    => $validated['published_at'] ?? now(),
         ]);
  
         if ($request->hasFile('attachments')) {
@@ -59,18 +61,20 @@ class PostController extends Controller
         abort_unless(auth()->user()->canPublish(), 403, 'No tienes permiso para publicar.');
 
         $validated = $request->validate([
-            'title'         => ['required', 'string', 'max:255'],
-            'description'   => ['required', 'string', 'max:20000'],
-            'published_at'  => ['nullable', 'date'],
-            'attachments'   => ['nullable', 'array', 'max:20'],
-            'attachments.*' => ['file', 'max:20480', 'extensions:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,zip,rar'],
+            'title'           => ['required', 'string', 'max:255'],
+            'description'     => ['required', 'string', 'max:20000'],
+            'project_task_id' => ['nullable', 'exists:project_tasks,id'],
+            'published_at'    => ['nullable', 'date'],
+            'attachments'     => ['nullable', 'array', 'max:20'],
+            'attachments.*'   => ['file', 'max:20480', 'extensions:jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,zip,rar'],
         ]);
 
         $post = $project->posts()->create([
-            'user_id'      => auth()->id(),
-            'title'        => $validated['title'],
-            'description'  => $validated['description'],
-            'published_at' => $validated['published_at'] ?? now(),
+            'user_id'         => auth()->id(),
+            'title'           => $validated['title'],
+            'description'     => $validated['description'],
+            'project_task_id' => $validated['project_task_id'] ?? null,
+            'published_at'    => $validated['published_at'] ?? now(),
         ]);
 
         if ($request->hasFile('attachments')) {
@@ -118,6 +122,7 @@ class PostController extends Controller
         $validated = $request->validate([
             'title'                     => ['required', 'string', 'max:255'],
             'description'               => ['required', 'string'],
+            'project_task_id'           => ['nullable', 'exists:project_tasks,id'],
             'published_at'              => ['nullable', 'date'],
             'delete_attachments'        => ['nullable', 'array'],
             'delete_attachments.*'      => ['integer', 'exists:attachments,id'],
@@ -130,9 +135,10 @@ class PostController extends Controller
         ]);
 
         $post->fill([
-            'title'        => $validated['title'],
-            'description'  => $validated['description'],
-            'published_at' => $validated['published_at'] ?? now(),
+            'title'           => $validated['title'],
+            'description'     => $validated['description'],
+            'project_task_id' => $validated['project_task_id'] ?? null,
+            'published_at'    => $validated['published_at'] ?? now(),
         ])->save();
 
         if ($request->has('delete_attachments')) {
@@ -167,15 +173,17 @@ class PostController extends Controller
         $validated = $request->validate([
             'title'              => ['required', 'string', 'max:255'],
             'description'        => ['required', 'string'],
+            'project_task_id'    => ['nullable', 'exists:project_tasks,id'],
             'published_at'       => ['nullable', 'date'],
             'delete_attachments' => ['nullable', 'array'],
             'delete_attachments.*' => ['integer', 'exists:attachments,id'],
         ]);
 
         $post->fill([
-            'title'        => $validated['title'],
-            'description'  => $validated['description'],
-            'published_at' => $validated['published_at'] ?? now(),
+            'title'           => $validated['title'],
+            'description'     => $validated['description'],
+            'project_task_id' => $validated['project_task_id'] ?? null,
+            'published_at'    => $validated['published_at'] ?? now(),
         ])->save();
 
         if ($request->has('delete_attachments')) {

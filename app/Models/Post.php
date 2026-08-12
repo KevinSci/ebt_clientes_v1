@@ -21,6 +21,7 @@ class Post extends Model
      */
     protected $fillable = [
         'project_id',
+        'project_task_id',
         'user_id',
         'title',
         'description',
@@ -49,6 +50,14 @@ class Post extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * A post optionally belongs to a project task.
+     */
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(ProjectTask::class, 'project_task_id');
     }
 
     /**

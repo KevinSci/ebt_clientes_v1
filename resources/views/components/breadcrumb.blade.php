@@ -7,7 +7,7 @@
     if (auth()->check()) {
         $homeUrl = auth()->user()->isAdmin() 
             ? route('admin.companies.index') 
-            : (auth()->user()->companies()->count() > 1 
+            : (auth()->user()->hasMultipleCompanies() 
                 ? route('client.dashboard') 
                 : (request()->route('company') 
                     ? route('client.companies.projects.index', request()->route('company')) 

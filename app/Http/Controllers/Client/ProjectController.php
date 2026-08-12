@@ -53,10 +53,20 @@ class ProjectController extends Controller
         $dateTo   = $request->input('date_to');
         $authorId = $request->input('author_id');
 
+        $project->load([
+            'phases' => fn ($q) => $q->orderBy('sort_order')
+                ->withCount([
+                    'tasks',
+                    'tasks as completed_tasks_count' => fn ($t) => $t->where('is_completed', true),
+                ]),
+            'phases.tasks' => fn ($q) => $q->orderBy('sort_order'),
+        ]);
+
         $postsQuery = $project->posts()
             ->with([
                 'attachments:id,post_id,file_name,file_path,type,folder_name,folder_path',
                 'author:id,name,role',
+                'task:id,phase_id,name',
             ])
             ->when($search->isNotEmpty(), fn ($q) => $q->where('title', 'like', "%{$search}%"))
             ->when($dateFrom, fn ($q) => $q->whereDate('published_at', '>=', $dateFrom))
