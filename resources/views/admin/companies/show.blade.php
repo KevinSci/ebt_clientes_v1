@@ -24,10 +24,6 @@
                             <span class="text-break">RFC: {{ $company->rfc }}</span>
                         </p>
                     @endif
-                    <p class="mb-1 text-muted small text-break d-flex align-items-start gap-2">
-                        <i class="bi bi-patch-check mt-1 flex-shrink-0" aria-hidden="true"></i>
-                        <span class="text-break">Régimen: {{ $company->tax_regime === 'moral' ? 'Persona Moral' : 'Persona Física' }}</span>
-                    </p>
                     @if ($company->phone)
                         <p class="mb-1 text-muted small text-break d-flex align-items-start gap-2">
                             <i class="bi bi-telephone mt-1 flex-shrink-0" aria-hidden="true"></i>
